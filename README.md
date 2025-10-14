@@ -8,6 +8,9 @@ Note: For high-level domain context, an attached project brief was used during s
 
 ## Quick links
 - AGENTS.md — authoritative, self-contained spec and implementation plan (models, API, frontend, tasks)
+- CODE_OF_CONDUCT.md — Code of conduct
+- CONTRIBUTING.md — Contributing guidelines
+- SECURITY.md — Security policy
 
 ## Project overview
 
