@@ -150,7 +150,7 @@ See `AGENTS.md` for the prioritized implementation plan, and acceptance criteria
 - CI: GitHub Actions to run lint and tests on PRs
 
 ## Contributing
-Please follow the tasks and break them into small, testable commits. See `AGENTS.md` for task-level guidance and commit message examples.
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## Questions & assumptions
 - JWT tokens include a role claim for role-based access control.
@@ -167,4 +167,4 @@ A domain brief was used to scope the project and determine user roles and use ca
 
 License
 
-Specify a license if needed (e.g., MIT).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
