@@ -1,0 +1,16 @@
+/* Tailwind-based Global Styles */
+
+/* App Layout */
+.app-layout {
+  @apply min-h-screen flex flex-col;
+}
+
+.main-content {
+  @apply flex flex-1;
+}
+
+.content-area {
+  @apply flex-1 bg-gray-100 min-h-[calc(100vh-60px)];
+}
+
+
