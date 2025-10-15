@@ -25,7 +25,6 @@ coverage/
 Thumbs.db
 
 # IDEs
-.vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
