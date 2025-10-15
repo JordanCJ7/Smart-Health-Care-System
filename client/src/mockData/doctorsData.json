@@ -1,0 +1,67 @@
+[
+  {
+    "doctorId": "DOC001",
+    "name": "Dr. Emily Wilson",
+    "specialization": "Cardiologist",
+    "department": "Cardiology",
+    "experience": "15 years",
+    "qualification": "MD, FACC",
+    "availableSlots": [
+      { "date": "2025-10-18", "times": ["10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM"] },
+      { "date": "2025-10-19", "times": ["09:00 AM", "10:00 AM", "11:00 AM"] },
+      { "date": "2025-10-21", "times": ["10:00 AM", "02:00 PM", "04:00 PM"] }
+    ]
+  },
+  {
+    "doctorId": "DOC002",
+    "name": "Dr. Michael Chen",
+    "specialization": "General Physician",
+    "department": "General Medicine",
+    "experience": "12 years",
+    "qualification": "MD, MBBS",
+    "availableSlots": [
+      { "date": "2025-10-18", "times": ["09:00 AM", "10:30 AM", "02:30 PM", "04:00 PM"] },
+      { "date": "2025-10-20", "times": ["09:00 AM", "11:00 AM", "03:00 PM"] },
+      { "date": "2025-10-22", "times": ["10:00 AM", "02:30 PM"] }
+    ]
+  },
+  {
+    "doctorId": "DOC003",
+    "name": "Dr. Robert Brown",
+    "specialization": "Orthopedist",
+    "department": "Orthopedics",
+    "experience": "18 years",
+    "qualification": "MD, MS Orthopedics",
+    "availableSlots": [
+      { "date": "2025-10-19", "times": ["08:00 AM", "10:00 AM", "01:00 PM"] },
+      { "date": "2025-10-21", "times": ["09:00 AM", "11:00 AM", "03:00 PM"] },
+      { "date": "2025-10-23", "times": ["08:00 AM", "02:00 PM", "04:00 PM"] }
+    ]
+  },
+  {
+    "doctorId": "DOC004",
+    "name": "Dr. Sarah Martinez",
+    "specialization": "Dermatologist",
+    "department": "Dermatology",
+    "experience": "10 years",
+    "qualification": "MD, Dermatology",
+    "availableSlots": [
+      { "date": "2025-10-18", "times": ["11:00 AM", "01:00 PM", "03:00 PM"] },
+      { "date": "2025-10-20", "times": ["10:00 AM", "02:00 PM"] },
+      { "date": "2025-10-22", "times": ["09:00 AM", "11:00 AM", "01:00 PM"] }
+    ]
+  },
+  {
+    "doctorId": "DOC005",
+    "name": "Dr. James Thompson",
+    "specialization": "Neurologist",
+    "department": "Neurology",
+    "experience": "20 years",
+    "qualification": "MD, DM Neurology",
+    "availableSlots": [
+      { "date": "2025-10-19", "times": ["10:00 AM", "02:00 PM"] },
+      { "date": "2025-10-21", "times": ["09:00 AM", "01:00 PM", "03:00 PM"] },
+      { "date": "2025-10-23", "times": ["11:00 AM", "02:00 PM"] }
+    ]
+  }
+]

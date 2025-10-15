@@ -1,0 +1,60 @@
+[
+  {
+    "prescriptionId": "RX001",
+    "patientId": "PT001",
+    "doctorName": "Dr. Emily Wilson",
+    "date": "2025-10-10",
+    "medications": [
+      {
+        "name": "Lisinopril",
+        "dosage": "10mg",
+        "frequency": "Once daily",
+        "duration": "30 days",
+        "instructions": "Take in the morning with water"
+      },
+      {
+        "name": "Atorvastatin",
+        "dosage": "20mg",
+        "frequency": "Once daily",
+        "duration": "30 days",
+        "instructions": "Take at bedtime"
+      }
+    ],
+    "status": "Active",
+    "refillsRemaining": 2
+  },
+  {
+    "prescriptionId": "RX002",
+    "patientId": "PT001",
+    "doctorName": "Dr. Robert Brown",
+    "date": "2025-10-10",
+    "medications": [
+      {
+        "name": "Ibuprofen",
+        "dosage": "400mg",
+        "frequency": "Three times daily",
+        "duration": "10 days",
+        "instructions": "Take with food"
+      }
+    ],
+    "status": "Active",
+    "refillsRemaining": 0
+  },
+  {
+    "prescriptionId": "RX003",
+    "patientId": "PT001",
+    "doctorName": "Dr. Michael Chen",
+    "date": "2025-09-15",
+    "medications": [
+      {
+        "name": "Amoxicillin",
+        "dosage": "500mg",
+        "frequency": "Three times daily",
+        "duration": "7 days",
+        "instructions": "Complete full course"
+      }
+    ],
+    "status": "Completed",
+    "refillsRemaining": 0
+  }
+]
