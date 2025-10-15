@@ -7,10 +7,10 @@ The repository contains a prescriptive implementation blueprint in `AGENTS.md` i
 Note: For high-level domain context, an attached project brief was used during scoping. All technical implementation details are self-contained in `AGENTS.md`.
 
 ## Quick links
-- AGENTS.md — authoritative, self-contained spec and implementation plan (models, API, frontend, tasks)
-- CODE_OF_CONDUCT.md — Code of conduct
-- CONTRIBUTING.md — Contributing guidelines
-- SECURITY.md — Security policy
+- [AGENTS.md](AGENTS.md) — authoritative, self-contained spec and implementation plan (models, API, frontend, tasks)
+- [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) — Code of conduct
+- [CONTRIBUTING](CONTRIBUTING.md) — Contributing guidelines
+- [SECURITY POLICY](SECURITY.md) — Security policy
 
 ## Project overview
 
