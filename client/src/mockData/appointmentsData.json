@@ -1,0 +1,35 @@
+[
+  {
+    "appointmentId": "APT001",
+    "patientId": "PT001",
+    "doctorName": "Dr. Emily Wilson",
+    "specialization": "Cardiologist",
+    "date": "2025-10-18",
+    "time": "10:00 AM",
+    "status": "Scheduled",
+    "department": "Cardiology",
+    "reason": "Regular checkup"
+  },
+  {
+    "appointmentId": "APT002",
+    "patientId": "PT001",
+    "doctorName": "Dr. Michael Chen",
+    "specialization": "General Physician",
+    "date": "2025-10-22",
+    "time": "02:30 PM",
+    "status": "Scheduled",
+    "department": "General Medicine",
+    "reason": "Follow-up consultation"
+  },
+  {
+    "appointmentId": "APT003",
+    "patientId": "PT001",
+    "doctorName": "Dr. Robert Brown",
+    "specialization": "Orthopedist",
+    "date": "2025-10-10",
+    "time": "11:00 AM",
+    "status": "Completed",
+    "department": "Orthopedics",
+    "reason": "Knee pain evaluation"
+  }
+]
