@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { UserPlus, Heart, ArrowLeft, Mail, Phone, Calendar, User, MapPin, Users } from 'lucide-react';
 import { useNavigate } from '../navigation';
 
-export default function PatientRegistrationPage() {
+export default function RegistrationPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -65,8 +65,8 @@ export default function PatientRegistrationPage() {
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <UserPlus className="h-8 w-8 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Patient Registration</h1>
-            <p className="text-gray-600">Create your account to access our healthcare services</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+            <p className="text-gray-600">Register to access our healthcare services</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">

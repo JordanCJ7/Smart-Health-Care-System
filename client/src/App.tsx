@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { addNavigationListener } from './pages/navigation';
 import HomePage from './pages/HomePage/HomePage';
-import PatientRegistrationPage from './pages/PatientRegistrationPage/PatientRegistrationPage';
-import PatientLoginPage from './pages/PatientLoginPage/PatientLoginPage';
+import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 import PatientDashboard from './pages/PatientDashboard/PatientDashboard';
 import AppointmentPage from './pages/AppointmentPage/AppointmentPage';
 import LabResultsPage from './pages/LabResultsPage/LabResultsPage';
@@ -27,9 +27,9 @@ function App() {
       case 'home':
         return <HomePage />;
       case 'register':
-        return <PatientRegistrationPage />;
+        return <RegistrationPage />;
       case 'login':
-        return <PatientLoginPage />;
+        return <LoginPage />;
       case 'dashboard':
         return <PatientDashboard />;
       case 'appointments':

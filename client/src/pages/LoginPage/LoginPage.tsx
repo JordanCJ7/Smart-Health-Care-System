@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { LogIn, Heart, ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from '../navigation';
 
-export default function PatientLoginPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
