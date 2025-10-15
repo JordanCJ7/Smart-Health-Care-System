@@ -49,57 +49,31 @@ Core features:
 
 ## Quickstart (developer)
 
-1. Backend
+### Backend (Not yet implemented)
 
-- Create `server` folder and initialize a Node project.
-- Install dependencies (example list):
+The backend server will be implemented in the `server` folder. See AGENTS.md for detailed implementation plan.
 
-```powershell
-cd server
-npm init -y
-npm install express mongoose cors dotenv jsonwebtoken bcryptjs
-npm install -D nodemon
-```
+### Frontend (✅ Implemented)
 
-- Create a `.env` with:
-
-```text
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/smart-health
-JWT_SECRET=your_jwt_secret
-```
-
-- Add an npm script to `package.json` for development:
-
-```json
-"scripts": {
-  "dev": "nodemon src/index.js",
-  "start": "node src/index.js"
-}
-```
-
-- Start the server:
+The React frontend has been fully implemented with all required components, pages, and services as functional placeholders.
 
 ```powershell
-npm run dev
-```
-
-2. Frontend
-
-- Create `client` with Create React App or preferred starter.
-
-```powershell
-npx create-react-app client
 cd client
-npm install axios react-router-dom
+npm install
 npm start
 ```
 
-- Add a proxy in `client/package.json` if running backend on port 5000:
+The frontend will start at [http://localhost:3000](http://localhost:3000)
 
-```json
-"proxy": "http://localhost:5000"
-```
+**Frontend Features:**
+- ✅ All page components created
+- ✅ Reusable UI components (Navbar, Sidebar, Cards, Tables)
+- ✅ API service modules ready for backend integration
+- ✅ Authentication context and protected routes
+- ✅ Role-based navigation and access control
+- ✅ Responsive layouts with CSS
+
+See `client/README.md` and `client/IMPLEMENTATION_SUMMARY.md` for detailed frontend documentation.
 
 ## API summary (high level)
 
