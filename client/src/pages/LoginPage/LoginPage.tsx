@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { LogIn, Heart, ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from '../navigation';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -21,18 +23,28 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login data:', formData);
+    const admin = { email: 'admin@hospital.local', password: 'adminpass123' };
+    
+    if (formData.email === admin.email && formData.password === admin.password) {
+      login({ name: 'Administrator', role: 'Admin' });
+      navigate('admin');
+      return;
+    }
+    
+    login({ name: 'Patient', role: 'Patient' });
     navigate('dashboard');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col">
-      <nav className="bg-white shadow-md">
+      <header className="bg-white/90 backdrop-blur-xl shadow-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Heart className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">HealthCare+</span>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Heart className="h-8 w-8 text-blue-600" />
+                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">HealthCare+</span>
+              </div>
             </div>
             <button
               onClick={() => navigate('home')}
@@ -43,7 +55,7 @@ export default function LoginPage() {
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-md w-full">
@@ -185,8 +197,10 @@ export default function LoginPage() {
           <div className="mt-8 bg-blue-50 rounded-lg p-4">
             <h3 className="font-semibold text-gray-900 mb-2">Demo Credentials</h3>
             <p className="text-sm text-gray-600">
-              Email: john.doe@example.com<br />
-              Password: demo123
+              Admin: admin@hospital.com  -
+              password : dminpass123<br />
+              Patient: john.doe@example.com -
+               password : demo123  <br/>
             </p>
           </div>
         </div>

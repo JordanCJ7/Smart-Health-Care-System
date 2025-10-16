@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Home, Calendar, FileText, Pill, CreditCard, User, Settings, LogOut, Heart, Globe, Menu, X } from 'lucide-react';
+import AdminMenu from './AdminMenu';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from '../pages/navigation';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -15,6 +17,8 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
   const [showSettings, setShowSettings] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const { user } = useAuth();
 
   const navItems = isAuthenticated
     ? [
@@ -168,36 +172,42 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
             style={{ width: '280px' }}
           >
             <div className="flex flex-col h-full p-6">
-              <div className="space-y-2 flex-1">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = currentPage === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => navigate(item.id as any)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg scale-105'
-                          : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50 hover:scale-102'
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" />
-                      <span className="font-medium">{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              {user && user.role === 'Admin' ? (
+                <AdminMenu currentPage={currentPage} />
+              ) : (
+                <>
+                  <div className="space-y-2 flex-1">
+                    {navItems.map((item) => {
+                      const Icon = item.icon as any;
+                      const isActive = currentPage === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => navigate(item.id as any)}
+                          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                            isActive
+                              ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg scale-105'
+                              : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50 hover:scale-102'
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                          <span className="font-medium">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              <div className="pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => navigate('home')}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span className="font-medium">{t('logout')}</span>
-                </button>
-              </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <button
+                      onClick={() => navigate('home')}
+                      className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span className="font-medium">{t('logout')}</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

@@ -41,12 +41,14 @@ export default function RegistrationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <nav className="bg-white shadow-md">
+      <header className="bg-white/90 backdrop-blur-xl shadow-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Heart className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">HealthCare+</span>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Heart className="h-8 w-8 text-blue-600" />
+                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">HealthCare+</span>
+              </div>
             </div>
             <button
               onClick={() => navigate('home')}
@@ -57,7 +59,7 @@ export default function RegistrationPage() {
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-2xl shadow-xl p-8">
