@@ -1,0 +1,6 @@
+[
+  { "bedNumber": "B-01", "ward": "ER", "status": "Vacant", "currentPatient": null },
+  { "bedNumber": "B-02", "ward": "ER", "status": "Occupied", "currentPatient": "P-003" },
+  { "bedNumber": "B-03", "ward": "Ward-A", "status": "Vacant", "currentPatient": null },
+  { "bedNumber": "B-12", "ward": "ER", "status": "Occupied", "currentPatient": "P-004" }
+]
