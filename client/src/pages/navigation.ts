@@ -1,4 +1,29 @@
-type Page = 'home' | 'register' | 'login' | 'dashboard' | 'appointments' | 'lab-results' | 'prescriptions' | 'profile' | 'health-card' | 'admin' | 'user-management' | 'department-schedule' | 'analytics' | 'notifications' | 'data-sync' | 'patient-support' | 'policies-faqs';
+type Page =
+  | 'home'
+  | 'register'
+  | 'login'
+  | 'dashboard'
+  | 'appointments'
+  | 'lab-results'
+  | 'prescriptions'
+  | 'profile'
+  | 'health-card'
+  | 'admin'
+  | 'user-management'
+  | 'department-schedule'
+  | 'analytics'
+  | 'notifications'
+  | 'data-sync'
+  | 'patient-support'
+  | 'policies-faqs'
+  | 'staff'
+  | 'staff-doctor'
+  | 'staff-lab'
+  | 'staff-pharmacy'
+  | 'staff-e-prescription'
+  | 'staff-medical-history'
+  | 'staff-doctor-profile'
+  | 'staff-billing';
 
 let currentPage: Page = 'home';
 let navigationListeners: Array<(page: Page) => void> = [];
@@ -46,6 +71,22 @@ const pageToPath = (page: Page) => {
       return '/admin/support';
     case 'policies-faqs':
       return '/admin/policies';
+    case 'staff':
+      return '/staff';
+    case 'staff-doctor':
+      return '/staff/doctor';
+    case 'staff-lab':
+      return '/staff/lab';
+    case 'staff-pharmacy':
+      return '/staff/pharmacy';
+    case 'staff-e-prescription':
+      return '/staff/e-prescription';
+    case 'staff-medical-history':
+      return '/staff/medical-history';
+    case 'staff-doctor-profile':
+      return '/staff/doctor-profile';
+    case 'staff-billing':
+      return '/staff/billing';
     default:
       return '/';
   }

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Home, Calendar, FileText, Pill, CreditCard, User, Settings, LogOut, Heart, Globe, Menu, X } from 'lucide-react';
 import AdminMenu from './AdminMenu';
+import StaffMenu from './StaffMenu';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from '../pages/navigation';
 import { useLanguage } from '../context/LanguageContext';
 
 interface NavigationProps {
-  currentPage: string;
+  currentPage?: string;
   isAuthenticated?: boolean;
   userName?: string;
 }
@@ -174,6 +175,8 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
             <div className="flex flex-col h-full p-6">
               {user && user.role === 'Admin' ? (
                 <AdminMenu currentPage={currentPage} />
+              ) : user && user.role === 'Staff' ? (
+                <StaffMenu currentPage={currentPage} />
               ) : (
                 <>
                   <div className="space-y-2 flex-1">
@@ -213,7 +216,7 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
 
           {sidebarOpen && (
             <div
-              className="fixed inset-0 bg-black/20 z-30 top-16 lg:hidden"
+              className="fixed inset-0 bg-black/10 z-30 top-16 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
           )}
@@ -222,7 +225,7 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
             className={`fixed left-0 top-16 bottom-0 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 z-40 transition-transform duration-300 ease-in-out lg:hidden ${
               sidebarOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
-            style={{ width: '280px' }}
+            style={{ width: '260px' }}
           >
             <div className="flex flex-col h-full p-6">
               <div className="space-y-2 flex-1">

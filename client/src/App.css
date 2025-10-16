@@ -2,15 +2,94 @@
 
 /* App Layout */
 .app-layout {
-  @apply min-h-screen flex flex-col;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  @apply flex flex-1;
+  display: flex;
+  flex: 1;
 }
 
 .content-area {
-  @apply flex-1 bg-gray-100 min-h-[calc(100vh-60px)];
+  flex: 1;
+  background-color: #f7fafc; /* Tailwind gray-100 */
+  min-height: calc(100vh - 60px);
 }
+
+/* Reusable card / glass panel style used across the app */
+.liquid-glass {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #f3f4f6; /* gray-100 */
+  border-radius: 1rem;
+  box-shadow: 0 6px 18px rgba(14, 30, 37, 0.08);
+}
+
+.panel-padding {
+  padding: 2rem;
+}
+
+/* Fix layout spacing when navigation sidebar present */
+@media (min-width: 768px) {
+  .content-with-sidebar {
+    /* Slightly reduce reserved sidebar space so main content gets more room */
+    padding-left: 240px;
+    padding-top: 5rem; /* roughly matches pt-20 */
+    transition: padding-left 200ms ease-in-out, padding-top 200ms ease-in-out;
+    box-sizing: border-box;
+  }
+}
+
+/* Wider inner container for staff pages to make better use of horizontal space */
+.content-inner {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Staff-only helper: visually align staff pages like patient pages when sidebar is present.
+   Applied only to Staff pages so other roles remain unchanged. */
+.staff-content {
+  padding-left: 0; /* avoid double-padding from wrapper */
+}
+
+/* Make the centered inner container on staff pages match patient pages
+   (top spacing for header + left offset to account for sidebar). */
+.staff-content .content-inner {
+  padding-top: 5rem; /* matches pt-20 on patient pages */
+}
+
+@media (min-width: 1024px) {
+  .staff-content .content-inner {
+    margin-left: 280px; /* match patient lg:ml-[280px] */
+  }
+}
+
+/* Also apply the same offset/top spacing to common page containers that use
+   max-w-7xl / max-w-6xl / max-w-5xl etc so pages that have their own wrappers
+   stay visually identical to patient pages. This is scoped under .staff-content
+   so it won't affect other roles. */
+.staff-content .max-w-7xl,
+.staff-content .max-w-6xl,
+.staff-content .max-w-5xl,
+.staff-content .max-w-4xl,
+.staff-content .max-w-3xl,
+.staff-content .content-area {
+  padding-top: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .staff-content .max-w-7xl,
+  .staff-content .max-w-6xl,
+  .staff-content .max-w-5xl,
+  .staff-content .max-w-4xl,
+  .staff-content .max-w-3xl,
+  .staff-content .content-area {
+    margin-left: 280px;
+  }
+}
+
+/* On very small screens keep normal flow (sidebar overlays) */
 
 

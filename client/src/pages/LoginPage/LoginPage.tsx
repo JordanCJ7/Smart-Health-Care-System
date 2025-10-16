@@ -24,13 +24,21 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const admin = { email: 'admin@hospital.local', password: 'adminpass123' };
-    
+    const staff = { email: 'staff@hospital.local', password: 'staffpass123' };
+
     if (formData.email === admin.email && formData.password === admin.password) {
       login({ name: 'Administrator', role: 'Admin' });
       navigate('admin');
       return;
     }
-    
+
+    if (formData.email === staff.email && formData.password === staff.password) {
+      login({ name: 'Staff Member', role: 'Staff' });
+      navigate('staff');
+      return;
+    }
+
+    // default demo patient
     login({ name: 'Patient', role: 'Patient' });
     navigate('dashboard');
   };

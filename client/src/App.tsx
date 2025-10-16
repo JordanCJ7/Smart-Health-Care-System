@@ -19,6 +19,15 @@ import PoliciesFaqs from './pages/Admin/PoliciesFaqs';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import StaffLayout from './pages/Staff/StaffLayout';
+import TriageAdmission from './pages/Staff/TriageAdmission';
+import DoctorDashboard from './pages/Staff/DoctorDashboard';
+import LabTechnicianDashboard from './pages/Staff/LabTechnicianDashboard';
+import PharmacyDashboard from './pages/Staff/PharmacyDashboard';
+import EPrescription from './pages/Staff/EPrescription';
+import MedicalHistory from './pages/Staff/MedicalHistory';
+import DoctorProfile from './pages/Staff/DoctorProfile';
+import Billing from './pages/Staff/Billing';
 import { useEffect } from 'react';
 import { useNavigate as rrNavigate } from 'react-router-dom';
 import { setRouterNavigate } from './pages/navigation';
@@ -59,6 +68,19 @@ function App() {
           <Route path="/admin/policies" element={<ProtectedRoute requiredRole="Admin"><PoliciesFaqs /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
+
+          {/* Staff protected routes */}
+          <Route path="/staff" element={<ProtectedRoute requiredRole="Staff"><StaffLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/staff/staff" replace />} />
+            <Route path="staff" element={<ProtectedRoute requiredRole="Staff"><TriageAdmission /></ProtectedRoute>} />
+            <Route path="doctor" element={<ProtectedRoute requiredRole="Staff"><DoctorDashboard /></ProtectedRoute>} />
+            <Route path="lab" element={<ProtectedRoute requiredRole="Staff"><LabTechnicianDashboard /></ProtectedRoute>} />
+            <Route path="pharmacy" element={<ProtectedRoute requiredRole="Staff"><PharmacyDashboard /></ProtectedRoute>} />
+            <Route path="e-prescription" element={<ProtectedRoute requiredRole="Staff"><EPrescription /></ProtectedRoute>} />
+            <Route path="medical-history" element={<ProtectedRoute requiredRole="Staff"><MedicalHistory /></ProtectedRoute>} />
+            <Route path="doctor-profile" element={<ProtectedRoute requiredRole="Staff"><DoctorProfile /></ProtectedRoute>} />
+            <Route path="billing" element={<ProtectedRoute requiredRole="Staff"><Billing /></ProtectedRoute>} />
+          </Route>
         </Routes>
       </main>
       <Footer />
