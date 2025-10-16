@@ -1,0 +1,41 @@
+[
+  {
+    "triageId": "T-1001",
+    "patientId": "P-001",
+    "name": "John Doe",
+    "age": 42,
+    "gender": "Male",
+    "vitals": { "bp": "130/85", "hr": 92, "temp": 37.2 },
+    "symptoms": "Chest pain and shortness of breath",
+    "severityLevel": "Critical",
+    "admissionStatus": "Queued",
+    "assignedBed": null,
+    "createdAt": "2025-10-16T08:14:00Z"
+  },
+  {
+    "triageId": "T-1002",
+    "patientId": "P-002",
+    "name": "Mary Fernando",
+    "age": 29,
+    "gender": "Female",
+    "vitals": { "bp": "120/78", "hr": 76, "temp": 36.7 },
+    "symptoms": "Fever and cough",
+    "severityLevel": "Stable",
+    "admissionStatus": "Queued",
+    "assignedBed": null,
+    "createdAt": "2025-10-16T09:02:00Z"
+  },
+  {
+    "triageId": "T-1003",
+    "patientId": "P-003",
+    "name": "Kumar Silva",
+    "age": 65,
+    "gender": "Male",
+    "vitals": { "bp": "150/95", "hr": 110, "temp": 38.3 },
+    "symptoms": "High fever, dizziness",
+    "severityLevel": "Critical",
+    "admissionStatus": "Admitted-ER",
+    "assignedBed": "B-12",
+    "createdAt": "2025-10-15T22:40:00Z"
+  }
+]

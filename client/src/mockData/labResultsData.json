@@ -1,0 +1,48 @@
+[
+  {
+    "resultId": "LAB001",
+    "patientId": "PT001",
+    "testName": "Complete Blood Count (CBC)",
+    "testDate": "2025-10-08",
+    "resultDate": "2025-10-09",
+    "status": "Available",
+    "orderedBy": "Dr. Emily Wilson",
+    "results": {
+      "WBC": "7.5 x10^3/μL",
+      "RBC": "5.2 x10^6/μL",
+      "Hemoglobin": "14.8 g/dL",
+      "Hematocrit": "44.2%",
+      "Platelets": "250 x10^3/μL"
+    },
+    "notes": "All values within normal range"
+  },
+  {
+    "resultId": "LAB002",
+    "patientId": "PT001",
+    "testName": "Lipid Panel",
+    "testDate": "2025-10-08",
+    "resultDate": "2025-10-09",
+    "status": "Available",
+    "orderedBy": "Dr. Emily Wilson",
+    "results": {
+      "Total Cholesterol": "185 mg/dL",
+      "LDL": "110 mg/dL",
+      "HDL": "55 mg/dL",
+      "Triglycerides": "100 mg/dL"
+    },
+    "notes": "Cholesterol levels are optimal"
+  },
+  {
+    "resultId": "LAB003",
+    "patientId": "PT001",
+    "testName": "Blood Glucose (Fasting)",
+    "testDate": "2025-10-05",
+    "resultDate": "2025-10-05",
+    "status": "Available",
+    "orderedBy": "Dr. Michael Chen",
+    "results": {
+      "Glucose": "92 mg/dL"
+    },
+    "notes": "Normal fasting glucose level"
+  }
+]

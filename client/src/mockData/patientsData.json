@@ -1,0 +1,42 @@
+[
+  {
+    "patientId": "PT001",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "555-0101",
+    "dateOfBirth": "1985-06-15",
+    "gender": "Male",
+    "bloodType": "O+",
+    "address": "123 Main St, Springfield, IL 62701",
+    "emergencyContact": {
+      "name": "Jane Doe",
+      "relationship": "Spouse",
+      "phone": "555-0102"
+    },
+    "insurance": {
+      "provider": "HealthCare Plus",
+      "policyNumber": "HCP-2024-001",
+      "groupNumber": "GRP-5678"
+    }
+  },
+  {
+    "patientId": "PT002",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@example.com",
+    "phone": "555-0201",
+    "dateOfBirth": "1990-03-22",
+    "gender": "Female",
+    "bloodType": "A+",
+    "address": "456 Oak Avenue, Springfield, IL 62702",
+    "emergencyContact": {
+      "name": "Michael Johnson",
+      "relationship": "Brother",
+      "phone": "555-0202"
+    },
+    "insurance": {
+      "provider": "Medicare Plus",
+      "policyNumber": "MCP-2024-002",
+      "groupNumber": "GRP-9012"
+    }
+  }
+]
