@@ -1,20 +1,71 @@
-import { Calendar, FileText, Pill, CreditCard, User, Activity, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Calendar, FileText, Pill, CreditCard, User, Activity, Clock, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from '../navigation';
 import Navigation from '../../components/Navigation';
 import { useLanguage } from '../../context/LanguageContext';
-import patientsData from '../../mockData/patientsData.json';
-import appointmentsData from '../../mockData/appointmentsData.json';
-import labResultsData from '../../mockData/labResultsData.json';
-import prescriptionsData from '../../mockData/prescriptionsData.json';
+import { useAuth } from '../../context/AuthContext';
+import * as appointmentService from '../../services/appointmentService';
+import * as labService from '../../services/labService';
+import * as prescriptionService from '../../services/prescriptionService';
 
 export default function PatientDashboard() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const currentPatient = patientsData[0];
-  const patientAppointments = appointmentsData.filter(apt => apt.patientId === currentPatient.patientId);
-  const upcomingAppointments = patientAppointments.filter(apt => apt.status === 'Scheduled');
-  const recentLabResults = labResultsData.filter(lab => lab.patientId === currentPatient.patientId).slice(0, 3);
-  const activePrescriptions = prescriptionsData.filter(rx => rx.patientId === currentPatient.patientId && rx.status === 'Active');
+  const { user } = useAuth();
+  
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [labResults, setLabResults] = useState<any[]>([]);
+  const [prescriptions, setPrescriptions] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      if (!user) return;
+      
+      setIsLoading(true);
+      setError('');
+      
+      try {
+        // Fetch all dashboard data in parallel
+        const appointmentsRes = await appointmentService.getMyAppointments();
+        const prescriptionsRes = await prescriptionService.getPatientPrescriptions(user._id);
+        
+        // Lab results optional - may fail due to authorization
+        let labResultsRes = null;
+        try {
+          labResultsRes = await labService.getPatientLabResults(user._id);
+        } catch (labErr) {
+          console.warn('Could not fetch lab results:', labErr);
+        }
+
+        if (appointmentsRes.success && appointmentsRes.data) {
+          setAppointments(appointmentsRes.data);
+        }
+        
+        if (labResultsRes && labResultsRes.success && labResultsRes.data) {
+          setLabResults(labResultsRes.data.slice(0, 3)); // Show only recent 3
+        }
+        
+        if (prescriptionsRes.success && prescriptionsRes.data) {
+          // Filter active prescriptions
+          const activePrescriptions = prescriptionsRes.data.filter(
+            (rx: any) => rx.status === 'Pending' || rx.status === 'Active'
+          );
+          setPrescriptions(activePrescriptions);
+        }
+      } catch (err: any) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user]);
+
+  const upcomingAppointments = appointments.filter(apt => apt.status === 'Scheduled');
 
   const quickActions = [
     { icon: Calendar, label: t('bookAppointment'), color: 'blue', action: () => navigate('appointments') },
@@ -27,15 +78,38 @@ export default function PatientDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Navigation currentPage="dashboard" isAuthenticated={true} userName={currentPatient.name} />
+      <Navigation currentPage="dashboard" isAuthenticated={true} userName={user?.name || 'User'} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20 lg:ml-[280px]">
         <div className="mb-8 px-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{t('welcome')}, {currentPatient.name.split(' ')[0]}!</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            {t('welcome')}, {user?.name.split(' ')[0] || 'User'}!
+          </h1>
           <p className="text-gray-600 text-sm sm:text-base">Here's your health dashboard overview</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-8">
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm text-red-800 font-medium">Error Loading Dashboard</p>
+              <p className="text-sm text-red-600 mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600">Loading your dashboard...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-8">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             const colorClasses = {
@@ -79,11 +153,13 @@ export default function PatientDashboard() {
             {upcomingAppointments.length > 0 ? (
               <div className="space-y-4">
                 {upcomingAppointments.map(apt => (
-                  <div key={apt.appointmentId} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                  <div key={apt._id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-semibold text-gray-900">{apt.doctorName}</h3>
-                        <p className="text-sm text-gray-600">{apt.specialization}</p>
+                        <h3 className="font-semibold text-gray-900">
+                          {apt.doctorId?.name || 'Doctor'}
+                        </h3>
+                        <p className="text-sm text-gray-600">{apt.department || 'General'}</p>
                       </div>
                       <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                         {apt.status}
@@ -91,10 +167,10 @@ export default function PatientDashboard() {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="h-4 w-4 mr-2" />
-                      {apt.date} at {apt.time}
+                      {new Date(apt.date).toLocaleDateString()} at {apt.time}
                     </div>
                     <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-semibold">Reason:</span> {apt.reason}
+                      <span className="font-semibold">Reason:</span> {apt.reason || 'Checkup'}
                     </p>
                   </div>
                 ))}
@@ -127,25 +203,33 @@ export default function PatientDashboard() {
               </button>
             </div>
 
-            {recentLabResults.length > 0 ? (
+            {labResults.length > 0 ? (
               <div className="space-y-4">
-                {recentLabResults.map(lab => (
-                  <div key={lab.resultId} className="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors">
+                {labResults.map(lab => (
+                  <div key={lab._id} className="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-semibold text-gray-900">{lab.testName}</h3>
-                        <p className="text-sm text-gray-600">Ordered by {lab.orderedBy}</p>
+                        <h3 className="font-semibold text-gray-900">{lab.testType}</h3>
+                        <p className="text-sm text-gray-600">
+                          Ordered by {lab.doctorId?.name || 'Doctor'}
+                        </p>
                       </div>
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        lab.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                        lab.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
                         {lab.status}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Test Date: {lab.testDate}
+                      Ordered: {new Date(lab.createdAt).toLocaleDateString()}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      Result Date: {lab.resultDate}
-                    </p>
+                    {lab.completedAt && (
+                      <p className="text-sm text-gray-600">
+                        Completed: {new Date(lab.completedAt).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -173,24 +257,36 @@ export default function PatientDashboard() {
               </button>
             </div>
 
-            {activePrescriptions.length > 0 ? (
+            {prescriptions.length > 0 ? (
               <div className="space-y-4">
-                {activePrescriptions.map(rx => (
-                  <div key={rx.prescriptionId} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
+                {prescriptions.map(rx => (
+                  <div key={rx._id} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-semibold text-gray-900">Prescribed by {rx.doctorName}</h3>
-                        <p className="text-sm text-gray-600">Date: {rx.date}</p>
+                        <h3 className="font-semibold text-gray-900">
+                          Prescribed by {rx.doctorId?.name || 'Doctor'}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Date: {new Date(rx.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
-                      <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        rx.status === 'Dispensed' ? 'bg-green-100 text-green-800' :
+                        rx.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                        rx.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
                         {rx.status}
                       </span>
                     </div>
                     <div className="space-y-2 mt-3">
-                      {rx.medications.map((med, idx) => (
+                      {rx.medications.map((med: any, idx: number) => (
                         <div key={idx} className="text-sm">
                           <p className="font-semibold text-gray-900">{med.name} - {med.dosage}</p>
-                          <p className="text-gray-600">{med.frequency} for {med.duration}</p>
+                          <p className="text-gray-600">
+                            {med.frequency}
+                            {med.duration && ` for ${med.duration}`}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -216,15 +312,15 @@ export default function PatientDashboard() {
             <div className="space-y-4">
               <div className="bg-white bg-opacity-20 rounded-lg p-4">
                 <p className="text-sm opacity-90">Blood Type</p>
-                <p className="text-2xl font-bold">{currentPatient.bloodType}</p>
+                <p className="text-2xl font-bold">{user?.bloodType || 'N/A'}</p>
               </div>
               <div className="bg-white bg-opacity-20 rounded-lg p-4">
                 <p className="text-sm opacity-90">Total Appointments</p>
-                <p className="text-2xl font-bold">{patientAppointments.length}</p>
+                <p className="text-2xl font-bold">{appointments.length}</p>
               </div>
               <div className="bg-white bg-opacity-20 rounded-lg p-4">
                 <p className="text-sm opacity-90">Insurance Provider</p>
-                <p className="text-lg font-semibold">{currentPatient.insurance.provider}</p>
+                <p className="text-lg font-semibold">{user?.insurance?.provider || 'Not provided'}</p>
               </div>
               <button
                 onClick={() => navigate('health-card')}
@@ -235,6 +331,8 @@ export default function PatientDashboard() {
             </div>
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );
