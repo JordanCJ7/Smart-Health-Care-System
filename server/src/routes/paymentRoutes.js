@@ -6,6 +6,8 @@ import {
   getPaymentById,
   getAllPayments,
   refundPayment,
+  retryPayment,
+  useAlternatePayment,
 } from '../controllers/paymentController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -31,5 +33,11 @@ router.get('/:id', getPaymentById);
 
 // Refund payment (Admin/Staff)
 router.post('/refund/:id', authorize('Staff', 'Admin'), refundPayment);
+
+// Retry payment (UC-001 Extension 6a)
+router.post('/retry/:id', retryPayment);
+
+// Use alternate payment method (UC-001 Extension 6a)
+router.post('/alternate', useAlternatePayment);
 
 export default router;
