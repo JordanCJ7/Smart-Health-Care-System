@@ -49,9 +49,37 @@ Core features:
 
 ## Quickstart (developer)
 
-### Backend (Not yet implemented)
+### Backend (✅ Implemented)
 
-The backend server will be implemented in the `server` folder. See AGENTS.md for detailed implementation plan.
+The complete, production-ready backend server is now implemented in the `server` folder.
+
+**Backend Features:**
+- ✅ Full authentication & authorization with JWT
+- ✅ Role-based access control (Patient, Doctor, Nurse, LabTechnician, Pharmacist, Staff, Admin)
+- ✅ Complete CRUD operations for all modules
+- ✅ Appointments management system
+- ✅ Triage & bed management
+- ✅ Lab order & results system
+- ✅ E-prescription & pharmacy dispensing
+- ✅ PayPal Sandbox payment integration
+- ✅ Input validation & error handling
+- ✅ MongoDB database with Mongoose ODM
+- ✅ Comprehensive API documentation
+
+```powershell
+cd server
+npm install
+
+# Copy .env.sample to .env and configure
+cp .env.sample .env
+
+# Start development server
+npm run dev
+```
+
+The backend will start at [http://localhost:5000](http://localhost:5000)
+
+See `server/README.md` for detailed API documentation.
 
 ### Frontend (✅ Implemented)
 

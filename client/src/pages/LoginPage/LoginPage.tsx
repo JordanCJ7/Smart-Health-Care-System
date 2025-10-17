@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { LogIn, Heart, ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Heart, ArrowLeft, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from '../navigation';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,28 +20,36 @@ export default function LoginPage() {
       ...formData,
       [e.target.name]: value
     });
+    // Clear error when user types
+    if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const admin = { email: 'admin@hospital.local', password: 'adminpass123' };
-    const staff = { email: 'staff@hospital.local', password: 'staffpass123' };
-
-    if (formData.email === admin.email && formData.password === admin.password) {
-      login({ name: 'Administrator', role: 'Admin' });
-      navigate('admin');
-      return;
+    setError('');
+    
+    try {
+      await login(formData.email, formData.password);
+      
+      // Navigation based on new 3-role structure
+      const user = JSON.parse(localStorage.getItem('shcs_user') || '{}');
+      
+      switch (user.role) {
+        case 'Admin':
+          navigate('admin');
+          break;
+        case 'Staff':
+          // All medical staff (Doctor, Nurse, Lab Tech, Pharmacist) now use Staff role
+          navigate('staff');
+          break;
+        case 'Patient':
+        default:
+          navigate('dashboard');
+          break;
+      }
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password. Please try again.');
     }
-
-    if (formData.email === staff.email && formData.password === staff.password) {
-      login({ name: 'Staff Member', role: 'Staff' });
-      navigate('staff');
-      return;
-    }
-
-    // default demo patient
-    login({ name: 'Patient', role: 'Patient' });
-    navigate('dashboard');
   };
 
   return (
@@ -76,7 +85,19 @@ export default function LoginPage() {
               <p className="text-gray-600">Login to access your health dashboard</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+                      <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-red-800 font-medium">Login Failed</p>
+                  <p className="text-sm text-red-600 mt-1">{error}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Email Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Mail className="inline h-4 w-4 mr-1" />
@@ -139,9 +160,20 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-lg"
+                disabled={isLoading}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Login
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-5 h-5" />
+                    <span>Login</span>
+                  </>
+                )}
               </button>
 
               <div className="relative my-6">
@@ -200,16 +232,6 @@ export default function LoginPage() {
                 </button>
               </p>
             </form>
-          </div>
-
-          <div className="mt-8 bg-blue-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Demo Credentials</h3>
-            <p className="text-sm text-gray-600">
-              Admin: admin@hospital.com  -
-              password : dminpass123<br />
-              Patient: john.doe@example.com -
-               password : demo123  <br/>
-            </p>
           </div>
         </div>
       </div>

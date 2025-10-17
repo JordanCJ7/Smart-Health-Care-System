@@ -1,0 +1,91 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import connectDB from './config/db.js';
+import { errorHandler, notFound } from './middleware/errorHandler.js';
+
+// Import routes
+import authRoutes from './routes/authRoutes.js';
+import appointmentRoutes from './routes/appointmentRoutes.js';
+import triageRoutes from './routes/triageRoutes.js';
+import labRoutes from './routes/labRoutes.js';
+import prescriptionRoutes from './routes/prescriptionRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+
+// Load environment variables
+dotenv.config();
+
+// Connect to database
+connectDB();
+
+const app = express();
+
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true,
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Request logging in development
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+  });
+}
+
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Smart Health Care System API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api', triageRoutes);
+app.use('/api/labs', labRoutes);
+app.use('/api/prescriptions', prescriptionRoutes);
+app.use('/api/payments', paymentRoutes);
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to Smart Health Care System API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      appointments: '/api/appointments',
+      triage: '/api/triage',
+      beds: '/api/beds',
+      labs: '/api/labs',
+      prescriptions: '/api/prescriptions',
+    },
+  });
+});
+
+// Error handlers (must be after routes)
+app.use(notFound);
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  // Close server & exit process
+  server.close(() => process.exit(1));
+});
+
+export default app;

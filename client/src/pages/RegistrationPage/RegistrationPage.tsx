@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { UserPlus, Heart, ArrowLeft, Mail, Phone, Calendar, User, MapPin, Users } from 'lucide-react';
+import { UserPlus, Heart, ArrowLeft, Mail, Phone, Calendar, User, MapPin, Users, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from '../navigation';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
+  const { register, isLoading } = useAuth();
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -31,12 +34,62 @@ export default function RegistrationPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user types
+    if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registration data:', formData);
-    navigate('dashboard');
+    setError('');
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    // Validate password strength (minimum 6 characters)
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    try {
+      // Prepare registration data for the API
+      const registrationData = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        password: formData.password,
+        role: 'Patient', // Default role for self-registration
+        phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
+        bloodType: formData.bloodType,
+        address: {
+          street: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode
+        },
+        emergencyContact: {
+          name: formData.emergencyContactName,
+          relation: formData.emergencyContactRelation,
+          phone: formData.emergencyContactPhone
+        },
+        insurance: {
+          provider: formData.insuranceProvider,
+          policyNumber: formData.policyNumber,
+          groupNumber: formData.groupNumber
+        }
+      };
+
+      await register(registrationData);
+      
+      // Navigate to patient dashboard after successful registration
+      navigate('dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -72,6 +125,17 @@ export default function RegistrationPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-red-800 font-medium">Registration Failed</p>
+                  <p className="text-sm text-red-600 mt-1">{error}</p>
+                </div>
+              </div>
+            )}
+
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                 <User className="h-5 w-5 mr-2 text-blue-600" />
@@ -380,14 +444,26 @@ export default function RegistrationPage() {
             <div className="flex space-x-4">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-lg"
+                disabled={isLoading}
+                className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Create Account
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Creating Account...</span>
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="w-5 h-5" />
+                    <span>Create Account</span>
+                  </>
+                )}
               </button>
               <button
                 type="button"
                 onClick={() => navigate('home')}
-                className="px-8 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+                disabled={isLoading}
+                className="px-8 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
