@@ -12,6 +12,8 @@ import triageRoutes from './routes/triageRoutes.js';
 import labRoutes from './routes/labRoutes.js';
 import prescriptionRoutes from './routes/prescriptionRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import inventoryRoutes from './routes/inventoryRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -55,6 +57,8 @@ app.use('/api', triageRoutes);
 app.use('/api/labs', labRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Root route
 app.get('/', (req, res) => {
