@@ -41,8 +41,8 @@ describe('UC-002: Patient Appointment & Registration', () => {
     await Waitlist.deleteMany({});
     await Notification.deleteMany({});
 
-    // Create users
-    const doctor = await User.create({
+    // Create users - using new + save to ensure pre-save hooks run
+    const doctor = new User({
       name: 'Dr. Sarah Smith',
       email: 'doctor.uc002@test.com',
       password: 'test123',
@@ -51,23 +51,26 @@ describe('UC-002: Patient Appointment & Registration', () => {
       department: 'Cardiology',
       licenseNumber: 'DOC12345'
     });
+    await doctor.save();
     doctorId = doctor._id;
 
-    const patient = await User.create({
+    const patient = new User({
       name: 'John Patient',
       email: 'patient.uc002@test.com',
       password: 'test123',
       role: 'Patient',
       phone: '555-0100'
     });
+    await patient.save();
     patientId = patient._id;
 
-    const admin = await User.create({
+    const admin = new User({
       name: 'Admin User',
       email: 'admin.uc002@test.com',
       password: 'test123',
       role: 'Admin'
     });
+    await admin.save();
 
     // Login to get tokens
     const doctorRes = await request(app)

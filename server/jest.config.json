@@ -8,5 +8,6 @@
   "testMatch": [
     "**/tests/**/*.test.js"
   ],
-  "transform": {}
+  "transform": {},
+  "setupFiles": ["<rootDir>/tests/setup.js"]
 }

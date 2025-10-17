@@ -35,31 +35,34 @@ describe('UC-001: E-Prescription & Pharmacy Dispense Workflow', () => {
     await Notification.deleteMany({});
     await Payment.deleteMany({});
 
-    // Create users
-    const doctor = await User.create({
+    // Create users - using new + save to ensure pre-save hooks run
+    const doctor = new User({
       name: 'Dr. Smith',
       email: 'doctor@pharmacy.test',
       password: 'test123',
       role: 'Staff',
       specialization: 'General Practice'
     });
+    await doctor.save();
     doctorId = doctor._id;
 
-    const pharmacist = await User.create({
+    const pharmacist = new User({
       name: 'Pharmacist Jane',
       email: 'pharmacist@test.com',
       password: 'test123',
       role: 'Staff',
       specialization: 'Pharmacy'
     });
+    await pharmacist.save();
     pharmacistId = pharmacist._id;
 
-    const patient = await User.create({
+    const patient = new User({
       name: 'Patient John',
       email: 'patient@pharmacy.test',
       password: 'test123',
       role: 'Patient'
     });
+    await patient.save();
     patientId = patient._id;
 
     // Create inventory items

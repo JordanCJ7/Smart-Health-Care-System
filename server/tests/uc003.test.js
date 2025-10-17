@@ -28,30 +28,33 @@ describe('UC-003: Laboratory Testing Workflow', () => {
     await User.deleteMany({});
     await LabOrder.deleteMany({});
 
-    // Create users
-    const doctor = await User.create({
+    // Create users - using new + save to ensure pre-save hooks run
+    const doctor = new User({
       name: 'Dr. Test',
       email: 'doctor@test.com',
       password: 'test123',
       role: 'Staff',
       specialization: 'Cardiology'
     });
+    await doctor.save();
     doctorId = doctor._id;
 
-    const labTech = await User.create({
+    const labTech = new User({
       name: 'Lab Tech',
       email: 'lab@test.com',
       password: 'test123',
       role: 'Staff',
       specialization: 'Laboratory'
     });
+    await labTech.save();
 
-    const patient = await User.create({
+    const patient = new User({
       name: 'Patient Test',
       email: 'patient@test.com',
       password: 'test123',
       role: 'Patient'
     });
+    await patient.save();
     patientId = patient._id;
 
     // Login to get tokens

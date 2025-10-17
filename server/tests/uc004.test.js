@@ -38,8 +38,8 @@ describe('UC-004: Nurse Triage and Admission Workflow', () => {
     await AuditLog.deleteMany({});
     await Notification.deleteMany({});
 
-    // Create nurse
-    const nurse = await User.create({
+    // Create nurse - using new + save to ensure pre-save hooks run
+    const nurse = new User({
       name: 'Nurse Test',
       email: 'nurse@test.com',
       password: 'test123',
@@ -47,10 +47,11 @@ describe('UC-004: Nurse Triage and Admission Workflow', () => {
       department: 'Emergency',
       specialization: 'Triage',
     });
+    await nurse.save();
     nurseId = nurse._id;
 
     // Create doctor
-    const doctor = await User.create({
+    const doctor = new User({
       name: 'Dr. Test',
       email: 'doctor@test.com',
       password: 'test123',
@@ -58,10 +59,11 @@ describe('UC-004: Nurse Triage and Admission Workflow', () => {
       department: 'Emergency',
       specialization: 'Emergency Medicine',
     });
+    await doctor.save();
     doctorId = doctor._id;
 
     // Create patient with digital health card
-    const patient = await User.create({
+    const patient = new User({
       name: 'Patient Test',
       email: 'patient@test.com',
       password: 'test123',
@@ -71,6 +73,7 @@ describe('UC-004: Nurse Triage and Admission Workflow', () => {
       gender: 'Male',
       bloodType: 'O+',
     });
+    await patient.save();
     patientId = patient._id;
 
     // Create test bed
