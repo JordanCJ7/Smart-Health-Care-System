@@ -8,6 +8,8 @@ export interface CreateAppointmentData {
   department?: string;
   reason?: string;
   notes?: string;
+  scheduleId?: string;
+  paymentId?: string;
 }
 
 export interface UpdateAppointmentData {
@@ -18,7 +20,53 @@ export interface UpdateAppointmentData {
   reason?: string;
 }
 
-// Create appointment
+export interface SlotHoldData {
+  scheduleId: string;
+  time: string;
+  holdDurationMinutes?: number;
+}
+
+export interface WaitlistData {
+  doctorId: string;
+  preferredDate: string;
+  alternativeDates?: string[];
+  department?: string;
+  reason?: string;
+}
+
+// Get available slots (UC-002 Step 3)
+export const getAvailableSlots = async (filters?: {
+  doctorId?: string;
+  startDate?: string;
+  endDate?: string;
+  department?: string;
+  specialization?: string;
+}) => {
+  const queryParams = new URLSearchParams(filters as Record<string, string>).toString();
+  const endpoint = queryParams ? `/schedules/available?${queryParams}` : '/schedules/available';
+  
+  return apiFetch(endpoint, {
+    method: 'GET',
+  });
+};
+
+// Hold a slot temporarily (UC-002 Step 4)
+export const holdSlot = async (holdData: SlotHoldData) => {
+  return apiFetch('/schedules/hold', {
+    method: 'POST',
+    body: JSON.stringify(holdData),
+  });
+};
+
+// Release a held slot
+export const releaseSlot = async (scheduleId: string, time: string) => {
+  return apiFetch('/schedules/release', {
+    method: 'POST',
+    body: JSON.stringify({ scheduleId, time }),
+  });
+};
+
+// Create appointment (UC-002 Step 6)
 export const createAppointment = async (appointmentData: CreateAppointmentData) => {
   return apiFetch('/appointments', {
     method: 'POST',
@@ -66,6 +114,26 @@ export const updateAppointment = async (id: string, updateData: UpdateAppointmen
 // Delete appointment
 export const deleteAppointment = async (id: string) => {
   return apiFetch(`/appointments/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+// Waitlist operations (UC-002 Extension 3a)
+export const addToWaitlist = async (waitlistData: WaitlistData) => {
+  return apiFetch('/waitlist', {
+    method: 'POST',
+    body: JSON.stringify(waitlistData),
+  });
+};
+
+export const getMyWaitlist = async () => {
+  return apiFetch('/waitlist/me', {
+    method: 'GET',
+  });
+};
+
+export const cancelWaitlistEntry = async (id: string) => {
+  return apiFetch(`/waitlist/${id}`, {
     method: 'DELETE',
   });
 };
