@@ -135,3 +135,18 @@ export const notifyPaymentFailed = async (paymentId, userId, reason) => {
     console.error('Error notifying about payment failure:', error);
   }
 };
+
+/**
+ * Notify doctor about patient triage and admission (UC-004 Step 8)
+ */
+export const notifyPatientAdmission = async (doctorId, nurseId, patientName, bedNumber, ward, triageRecordId) => {
+  return notifyDoctor({
+    doctorId,
+    senderId: nurseId,
+    type: 'PATIENT_ADMITTED',
+    title: 'Patient Admission Notification',
+    message: `Patient ${patientName} has been admitted to bed ${bedNumber} in ${ward}. Please review triage status and patient details.`,
+    priority: 'High',
+    metadata: { patientName, bedNumber, ward, triageRecordId },
+  });
+};
