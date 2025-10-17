@@ -3,11 +3,14 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { initScheduledJobs } from './utils/scheduler.js';
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import scheduleRoutes from './routes/scheduleRoutes.js';
+import waitlistRoutes from './routes/waitlistRoutes.js';
 import triageRoutes from './routes/triageRoutes.js';
 import labRoutes from './routes/labRoutes.js';
 import prescriptionRoutes from './routes/prescriptionRoutes.js';
@@ -20,6 +23,11 @@ dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Initialize scheduled jobs (slot hold cleaner, waitlist expiration, etc.)
+if (process.env.NODE_ENV !== 'test') {
+  initScheduledJobs();
+}
 
 const app = express();
 
@@ -53,6 +61,8 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/v1', profileRoutes);
 app.use('/api/appointments', appointmentRoutes);
+app.use('/api/schedules', scheduleRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 app.use('/api', triageRoutes);
 app.use('/api/labs', labRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
@@ -69,10 +79,15 @@ app.get('/', (req, res) => {
       health: '/api/health',
       auth: '/api/auth',
       appointments: '/api/appointments',
+      schedules: '/api/schedules',
+      waitlist: '/api/waitlist',
       triage: '/api/triage',
       beds: '/api/beds',
       labs: '/api/labs',
       prescriptions: '/api/prescriptions',
+      payments: '/api/payments',
+      inventory: '/api/inventory',
+      notifications: '/api/notifications',
     },
   });
 });
