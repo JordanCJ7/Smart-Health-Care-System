@@ -21,6 +21,10 @@ const notificationSchema = new mongoose.Schema(
         'PRESCRIPTION_DISPENSED',
         'INVENTORY_LOW',
         'PATIENT_ADMITTED',
+        'APPOINTMENT_CONFIRMED',
+        'APPOINTMENT_REMINDER',
+        'APPOINTMENT_CANCELLED',
+        'SLOT_AVAILABLE',
         'GENERAL'
       ],
       required: true,

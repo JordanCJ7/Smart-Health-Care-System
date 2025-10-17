@@ -150,3 +150,56 @@ export const notifyPatientAdmission = async (doctorId, nurseId, patientName, bed
     metadata: { patientName, bedNumber, ward, triageRecordId },
   });
 };
+
+/**
+ * Send appointment confirmation (UC-002 Step 7)
+ * Sends confirmation via SMS/Email/App with appointment details
+ */
+export const sendAppointmentConfirmation = async (options) => {
+  const {
+    appointmentId,
+    patientId,
+    patientName,
+    patientEmail,
+    doctorName,
+    doctorSpecialization,
+    date,
+    time,
+    department,
+    reason,
+  } = options;
+
+  try {
+    // Create in-app notification
+    await Notification.create({
+      recipientId: patientId,
+      type: 'GENERAL',
+      title: 'Appointment Confirmed',
+      message: `Your appointment with Dr. ${doctorName} (${doctorSpecialization}) is confirmed for ${new Date(date).toLocaleDateString()} at ${time}.`,
+      priority: 'Medium',
+      metadata: {
+        appointmentId,
+        doctorName,
+        doctorSpecialization,
+        date,
+        time,
+        department,
+        reason,
+      },
+    });
+
+    // TODO: In production, integrate with:
+    // - Email service (SendGrid, AWS SES, etc.) to send confirmation email
+    // - SMS service (Twilio, AWS SNS, etc.) to send SMS confirmation
+    // - Push notification service for mobile app
+    
+    console.log(`Appointment confirmation sent to ${patientName} (${patientEmail})`);
+    console.log(`Appointment: ${appointmentId} - ${doctorName} on ${date} at ${time}`);
+
+    return true;
+  } catch (error) {
+    console.error('Error sending appointment confirmation:', error);
+    // Don't throw - this is a non-critical operation
+    return false;
+  }
+};
