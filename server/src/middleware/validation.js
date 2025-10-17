@@ -20,8 +20,8 @@ export const registerValidation = [
     .withMessage('Password must be at least 6 characters'),
   body('role')
     .optional()
-    .isIn(['Patient', 'Doctor', 'Nurse', 'LabTechnician', 'Pharmacist', 'Staff', 'Admin'])
-    .withMessage('Invalid role'),
+    .isIn(['Patient', 'Staff', 'Admin'])
+    .withMessage('Invalid role. Valid roles are: Patient, Staff, Admin'),
 ];
 
 export const loginValidation = [
@@ -73,11 +73,13 @@ export const createLabOrderValidation = [
     .optional()
     .isIn(['Routine', 'Urgent', 'STAT'])
     .withMessage('Invalid priority'),
+  body('clinicalNotes').optional().trim(),
 ];
 
 export const updateLabResultsValidation = [
   param('orderId').isMongoId().withMessage('Valid order ID is required'),
   body('results').notEmpty().withMessage('Results are required'),
+  body('criticalValues').optional().isArray().withMessage('Critical values must be an array'),
 ];
 
 // Prescription validation rules
@@ -94,4 +96,32 @@ export const updatePrescriptionValidation = [
   body('status')
     .isIn(['Pending', 'Dispensed', 'Rejected', 'Expired'])
     .withMessage('Invalid status'),
+];
+
+// Profile validation rules
+export const updateProfileValidation = [
+  body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
+  body('phone').optional().trim(),
+  body('dateOfBirth').optional().isISO8601().withMessage('Valid date is required'),
+  body('gender').optional().isIn(['Male', 'Female', 'Other']).withMessage('Invalid gender'),
+  body('bloodType')
+    .optional()
+    .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    .withMessage('Invalid blood type'),
+  body('address').optional().trim(),
+  body('emergencyContact.name').optional().trim(),
+  body('emergencyContact.relationship').optional().trim(),
+  body('emergencyContact.phone').optional().trim(),
+  body('insurance.provider').optional().trim(),
+  body('insurance.policyNumber').optional().trim(),
+  body('insurance.groupNumber').optional().trim(),
+  body('specialization').optional().trim(),
+  body('department').optional().trim(),
+];
+
+export const updatePasswordValidation = [
+  body('currentPassword').notEmpty().withMessage('Current password is required'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('New password must be at least 6 characters'),
 ];

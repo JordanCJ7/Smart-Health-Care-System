@@ -26,7 +26,8 @@ Where the original project brief and implementation notes were consulted during 
 
 High-level summary of design choices and rationale:
 - The system implements four core areas: appointments, triage/admission (including bed management), lab orders/results, and e-prescription/pharmacy flows.
-- Roles are explicitly defined and normalized to: Patient, Doctor, Nurse, LabTechnician, Pharmacist, Staff.
+- Roles are explicitly defined: **Patient**, **Staff** (includes doctors, nurses, lab technicians, pharmacists), and **Admin**.
+  - Staff members are distinguished by additional fields: `specialization`, `department`, `licenseNumber`
 - Technology choices: MERN stack (MongoDB + Mongoose, Express, React, Node), JWT for authentication, Axios for API requests from the client.
 - Pragmatic additions for implementability: Mongoose timestamps, basic indexes, centralized error handling, role-based middleware, consistent JSON API envelope.
 

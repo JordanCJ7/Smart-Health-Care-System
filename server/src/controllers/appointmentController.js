@@ -64,10 +64,16 @@ export const getMyAppointments = asyncHandler(async (req, res) => {
   // Filter based on user role
   if (req.user.role === 'Patient') {
     query.patientId = req.user.id;
-  } else if (req.user.role === 'Doctor') {
-    query.doctorId = req.user.id;
+  } else if (req.user.role === 'Staff') {
+    // Staff members with specialization (doctors) see their appointments
+    if (req.user.specialization) {
+      query.doctorId = req.user.id;
+    } else {
+      // Other staff can see all appointments
+      query = {};
+    }
   } else {
-    // Staff can see all appointments
+    // Admin can see all appointments
     query = {};
   }
 

@@ -12,7 +12,10 @@ Production-ready backend implementation for the Smart Health Care System.
 
 ### Authentication & Authorization
 - JWT-based authentication
-- Role-based access control (Patient, Doctor, Nurse, LabTechnician, Pharmacist, Staff)
+- Role-based access control (Patient, Staff, Admin)
+  - **Patient**: Users receiving healthcare services
+  - **Staff**: Healthcare providers including doctors, nurses, lab technicians, pharmacists
+  - **Admin**: System administrators
 - Password hashing with bcrypt
 
 ### Core Modules

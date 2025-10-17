@@ -6,6 +6,7 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import triageRoutes from './routes/triageRoutes.js';
 import labRoutes from './routes/labRoutes.js';
@@ -48,6 +49,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/v1', profileRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api', triageRoutes);
 app.use('/api/labs', labRoutes);
