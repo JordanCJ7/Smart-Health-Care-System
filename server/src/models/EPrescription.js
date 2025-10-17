@@ -49,7 +49,7 @@ const ePrescriptionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Dispensed', 'Rejected', 'Expired'],
+      enum: ['Pending', 'Dispensed', 'Rejected', 'Expired', 'Clarification_Required', 'Partially_Dispensed'],
       default: 'Pending',
     },
     validatedBy: {
@@ -67,6 +67,46 @@ const ePrescriptionSchema = new mongoose.Schema(
     notes: {
       type: String,
       trim: true,
+    },
+    clarificationRequest: {
+      reason: String,
+      requestedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      requestedAt: Date,
+      resolved: {
+        type: Boolean,
+        default: false,
+      },
+      response: String,
+    },
+    unavailableMedications: [
+      {
+        medicationName: String,
+        reason: String,
+        alternatives: [String],
+        suggestedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      }
+    ],
+    dispensedMedications: [
+      {
+        medicationName: String,
+        quantity: Number,
+        dispensedAt: Date,
+      }
+    ],
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Payment',
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['Pending', 'Completed', 'Failed', 'Refunded'],
+      default: 'Pending',
     },
     expiresAt: {
       type: Date,
