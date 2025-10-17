@@ -20,6 +20,7 @@ const notificationSchema = new mongoose.Schema(
         'PAYMENT_FAILED',
         'PRESCRIPTION_DISPENSED',
         'INVENTORY_LOW',
+        'PATIENT_ADMITTED',
         'GENERAL'
       ],
       required: true,
