@@ -518,24 +518,22 @@ const PersonalInfoTab = React.memo(({
                 { value: 'Other', label: 'Other' },
               ]}
             />
-            {profile!.userRole === 'Patient' && (
-              <EditableSelectField
-                label="Blood Type"
-                value={editData.bloodType || ''}
-                onChange={(value) => handleInputChange('bloodType', value)}
-                options={[
-                  { value: '', label: 'Select...' },
-                  { value: 'A+', label: 'A+' },
-                  { value: 'A-', label: 'A-' },
-                  { value: 'B+', label: 'B+' },
-                  { value: 'B-', label: 'B-' },
-                  { value: 'AB+', label: 'AB+' },
-                  { value: 'AB-', label: 'AB-' },
-                  { value: 'O+', label: 'O+' },
-                  { value: 'O-', label: 'O-' },
-                ]}
-              />
-            )}
+            <EditableSelectField
+              label="Blood Type"
+              value={editData.bloodType || ''}
+              onChange={(value) => handleInputChange('bloodType', value)}
+              options={[
+                { value: '', label: 'Select...' },
+                { value: 'A+', label: 'A+' },
+                { value: 'A-', label: 'A-' },
+                { value: 'B+', label: 'B+' },
+                { value: 'B-', label: 'B-' },
+                { value: 'AB+', label: 'AB+' },
+                { value: 'AB-', label: 'AB-' },
+                { value: 'O+', label: 'O+' },
+                { value: 'O-', label: 'O-' },
+              ]}
+            />
             {profile!.userRole === 'Staff' && (
               <>
                 <EditableField
@@ -563,9 +561,7 @@ const PersonalInfoTab = React.memo(({
             />
             <InfoField label="Gender" value={profile!.gender || 'Not specified'} />
             <InfoField label="Account Status" value={profile!.isActive ? 'Active' : 'Inactive'} />
-            {profile!.userRole === 'Patient' && profile!.bloodType && (
-              <InfoField label="Blood Type" value={profile!.bloodType} />
-            )}
+            {profile!.bloodType && <InfoField label="Blood Type" value={profile!.bloodType} />}
             {profile.userRole === 'Staff' && (
               <>
                 {profile.specialization && <InfoField label="Specialization" value={profile.specialization} />}
@@ -939,7 +935,7 @@ function PatientRoleData({ roleData }: { roleData: any }) {
         <StatCard
           icon={Activity}
           label="Blood Group"
-          value={roleData.bloodGroup || 'Not specified'}
+          value={roleData.bloodType || 'Not specified'}
           color="red"
         />
         <StatCard

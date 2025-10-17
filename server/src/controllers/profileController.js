@@ -28,11 +28,15 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     userRole: user.role,
     dateOfBirth: user.dateOfBirth,
     gender: user.gender,
+    bloodType: user.bloodType, // Added bloodType to base profile
     address: user.address,
     digitalHealthCardId: user.digitalHealthCardId,
     isActive: user.isActive,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    // Add top-level fields for emergency contact and insurance
+    emergencyContact: user.emergencyContact || null,
+    insurance: user.insurance || null,
   };
 
   // Add role-specific data based on user role
@@ -93,7 +97,7 @@ const getPatientSpecificData = async (userId, user) => {
   });
 
   return {
-    bloodGroup: user.bloodType,
+    bloodType: user.bloodType, // Changed from bloodGroup to bloodType for consistency
     lastVisitDate,
     upcomingAppointmentsCount,
     recentAppointments: recentAppointments.map((apt) => ({
