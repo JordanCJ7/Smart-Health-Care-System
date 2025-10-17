@@ -7,6 +7,10 @@ import {
   updatePrescriptionStatus,
   getPatientPrescriptions,
   getDoctorPrescriptions,
+  checkInventoryAvailability,
+  requestClarification,
+  suggestAlternative,
+  dispensePrescription,
 } from '../controllers/prescriptionController.js';
 import { protect, authorize } from '../middleware/auth.js';
 import {
@@ -66,5 +70,34 @@ router
     validate,
     updatePrescriptionStatus
   );
+
+// UC-001 Extension scenarios
+// Check inventory availability (Step 4)
+router.post(
+  '/:id/check-inventory',
+  authorize('Staff', 'Admin'),
+  checkInventoryAvailability
+);
+
+// Request clarification from doctor (Extension 3a)
+router.post(
+  '/:id/clarify',
+  authorize('Staff', 'Admin'),
+  requestClarification
+);
+
+// Suggest alternative medication (Extension 4a)
+router.post(
+  '/:id/suggest-alternative',
+  authorize('Staff', 'Admin'),
+  suggestAlternative
+);
+
+// Dispense prescription with inventory check (Steps 5-8 + Extension 7a)
+router.post(
+  '/:id/dispense',
+  authorize('Staff', 'Admin'),
+  dispensePrescription
+);
 
 export default router;

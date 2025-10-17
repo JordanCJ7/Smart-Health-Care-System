@@ -57,3 +57,25 @@ export const refundPayment = async (id: string) => {
     method: 'POST',
   });
 };
+
+// Retry payment (UC-001 Extension 6a)
+export const retryPayment = async (id: string) => {
+  return apiFetch(`/payments/retry/${id}`, {
+    method: 'POST',
+  });
+};
+
+// Use alternate payment method (UC-001 Extension 6a)
+export interface AlternatePaymentData {
+  originalPaymentId: string;
+  paymentMethod: 'PayPal' | 'Card' | 'Cash';
+  amount?: number;
+  description?: string;
+}
+
+export const useAlternatePayment = async (paymentData: AlternatePaymentData) => {
+  return apiFetch('/payments/alternate', {
+    method: 'POST',
+    body: JSON.stringify(paymentData),
+  });
+};

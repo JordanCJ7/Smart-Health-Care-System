@@ -77,3 +77,41 @@ export const getDoctorPrescriptions = async () => {
     method: 'GET',
   });
 };
+
+// UC-001 Extension scenarios
+
+// Check inventory availability (UC-001 Step 4)
+export const checkInventoryAvailability = async (prescriptionId: string) => {
+  return apiFetch(`/prescriptions/${prescriptionId}/check-inventory`, {
+    method: 'POST',
+  });
+};
+
+// Request clarification from doctor (UC-001 Extension 3a)
+export const requestClarification = async (prescriptionId: string, reason: string) => {
+  return apiFetch(`/prescriptions/${prescriptionId}/clarify`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+};
+
+// Suggest alternative medication (UC-001 Extension 4a)
+export const suggestAlternative = async (
+  prescriptionId: string,
+  medicationName: string,
+  alternatives: string[],
+  reason?: string
+) => {
+  return apiFetch(`/prescriptions/${prescriptionId}/suggest-alternative`, {
+    method: 'POST',
+    body: JSON.stringify({ medicationName, alternatives, reason }),
+  });
+};
+
+// Dispense prescription with inventory check (UC-001 Steps 5-8 + Extension 7a)
+export const dispensePrescription = async (prescriptionId: string, paymentId?: string) => {
+  return apiFetch(`/prescriptions/${prescriptionId}/dispense`, {
+    method: 'POST',
+    body: JSON.stringify({ paymentId }),
+  });
+};
