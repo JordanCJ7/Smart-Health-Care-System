@@ -1,5 +1,7 @@
 import express from 'express';
 import {
+  verifyPatientIdentity,
+  getPatientMedicalHistory,
   createTriageRecord,
   getTriageRecords,
   getTriageRecordById,
@@ -22,6 +24,20 @@ const router = express.Router();
 
 // All routes require authentication
 router.use(protect);
+
+// UC-004 Step 2: Verify Patient Identity
+router.post(
+  '/triage/verify-patient',
+  authorize('Staff', 'Admin'),
+  verifyPatientIdentity
+);
+
+// UC-004 Step 3: Access/Manage Patient Medical History
+router.get(
+  '/triage/patient-history/:patientId',
+  authorize('Staff', 'Admin'),
+  getPatientMedicalHistory
+);
 
 // Triage routes
 router
