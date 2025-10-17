@@ -77,11 +77,10 @@ export const getPrescriptionById = asyncHandler(async (req, res) => {
     throw new Error('Prescription not found');
   }
 
-  // Check authorization
+  // Check authorization (Staff includes pharmacists and doctors)
   const isAuthorized =
     req.user.role === 'Staff' ||
     req.user.role === 'Admin' ||
-    req.user.role === 'Pharmacist' ||
     prescription.patientId._id.toString() === req.user.id ||
     prescription.doctorId._id.toString() === req.user.id;
 
@@ -128,16 +127,14 @@ export const updatePrescriptionStatus = asyncHandler(async (req, res) => {
 
 // @desc    Get patient's prescriptions
 // @route   GET /api/prescriptions/patient/:patientId
-// @access  Private (Doctor, Patient, Staff, Pharmacist)
+// @access  Private (Staff, Patient, Admin)
 export const getPatientPrescriptions = asyncHandler(async (req, res) => {
   const { patientId } = req.params;
 
-  // Check authorization
+  // Check authorization (Staff includes doctors and pharmacists)
   const isAuthorized =
-    req.user.role === 'Doctor' ||
     req.user.role === 'Staff' ||
     req.user.role === 'Admin' ||
-    req.user.role === 'Pharmacist' ||
     req.user.id === patientId;
 
   if (!isAuthorized) {

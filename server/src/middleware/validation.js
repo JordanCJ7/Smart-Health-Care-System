@@ -73,11 +73,13 @@ export const createLabOrderValidation = [
     .optional()
     .isIn(['Routine', 'Urgent', 'STAT'])
     .withMessage('Invalid priority'),
+  body('clinicalNotes').optional().trim(),
 ];
 
 export const updateLabResultsValidation = [
   param('orderId').isMongoId().withMessage('Valid order ID is required'),
   body('results').notEmpty().withMessage('Results are required'),
+  body('criticalValues').optional().isArray().withMessage('Critical values must be an array'),
 ];
 
 // Prescription validation rules

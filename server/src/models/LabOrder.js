@@ -19,7 +19,7 @@ const labOrderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Ordered', 'Sample-Collected', 'Processing', 'Completed', 'Cancelled'],
+      enum: ['Ordered', 'Sample-Collected', 'Processing', 'Completed', 'Cancelled', 'Sample-Rejected'],
       default: 'Ordered',
     },
     priority: {
@@ -31,15 +31,92 @@ const labOrderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    // Clinical notes from ordering doctor (Step 3)
+    clinicalNotes: {
+      type: String,
+      trim: true,
+    },
+    // General notes (can be updated by lab staff)
     notes: {
       type: String,
       trim: true,
     },
+    // Sample quality tracking (Step 7a - Extension)
+    sampleQuality: {
+      status: {
+        type: String,
+        enum: ['Good', 'Poor', 'Contaminated', 'Insufficient'],
+        default: 'Good',
+      },
+      rejectionReason: {
+        type: String,
+        trim: true,
+      },
+      rejectedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      rejectedAt: {
+        type: Date,
+      },
+    },
+    // Critical value alert (Step 8a - Extension)
+    criticalAlert: {
+      isCritical: {
+        type: Boolean,
+        default: false,
+      },
+      flaggedAt: {
+        type: Date,
+      },
+      acknowledgedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      acknowledgedAt: {
+        type: Date,
+      },
+      alertMessage: {
+        type: String,
+        trim: true,
+      },
+    },
+    // Doctor's interpretation and follow-up (Step 10)
+    doctorInterpretation: {
+      interpretation: {
+        type: String,
+        trim: true,
+      },
+      followUpActions: {
+        type: String,
+        trim: true,
+      },
+      interpretedAt: {
+        type: Date,
+      },
+    },
+    // Results notification tracking (Step 9)
+    notificationSent: {
+      type: Boolean,
+      default: false,
+    },
+    notificationSentAt: {
+      type: Date,
+    },
+    // Lab staff who completed the test (Step 8)
     completedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
     completedAt: {
+      type: Date,
+    },
+    // Sample collection tracking (Step 6)
+    sampleCollectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    sampleCollectedAt: {
       type: Date,
     },
   },
