@@ -12,7 +12,7 @@ export default function DoctorProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Navigation currentPage="staff-doctor-profile" isAuthenticated={true} userName={'Staff'} />
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24 lg:ml-[280px]">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Doctor's Profile</h1>
           <p className="text-gray-600 mt-1">View and edit doctor's professional profile and schedule.</p>

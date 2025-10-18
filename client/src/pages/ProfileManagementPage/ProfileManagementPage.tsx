@@ -347,16 +347,17 @@ export default function ProfileManagementPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Navigation currentPage="profile" isAuthenticated={true} userName={profile.name} />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-20 lg:ml-[280px]">
-        <div className="text-center mb-8">
-          <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="h-8 w-8 text-blue-600" />
+      <div className="lg:pl-[280px]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-20">
+          <div className="text-center mb-8">
+            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="h-8 w-8 text-blue-600" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Management</h1>
+            <p className="text-gray-600">
+              Manage your profile as <span className="font-semibold text-blue-600">{profile.userRole}</span>
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Management</h1>
-          <p className="text-gray-600">
-            Manage your profile as <span className="font-semibold text-blue-600">{profile.userRole}</span>
-          </p>
-        </div>
 
         {/* Save Message */}
         {saveMessage && (
@@ -427,6 +428,7 @@ export default function ProfileManagementPage() {
           </div>
 
           <div className="p-8">{renderTabContent()}</div>
+        </div>
         </div>
       </div>
     </div>

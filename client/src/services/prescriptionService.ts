@@ -98,20 +98,21 @@ export const requestClarification = async (prescriptionId: string, reason: strin
 // Suggest alternative medication (UC-001 Extension 4a)
 export const suggestAlternative = async (
   prescriptionId: string,
-  medicationName: string,
-  alternatives: string[],
-  reason?: string
+  alternativeMedication: { name: string; dosage: string; frequency: string; reason: string }
 ) => {
   return apiFetch(`/prescriptions/${prescriptionId}/suggest-alternative`, {
     method: 'POST',
-    body: JSON.stringify({ medicationName, alternatives, reason }),
+    body: JSON.stringify(alternativeMedication),
   });
 };
 
-// Dispense prescription with inventory check (UC-001 Steps 5-8 + Extension 7a)
-export const dispensePrescription = async (prescriptionId: string, paymentId?: string) => {
+// Dispense prescription (UC-001 Steps 5-8)
+export const dispensePrescription = async (
+  prescriptionId: string,
+  dispensedQuantities?: Record<string, number>
+) => {
   return apiFetch(`/prescriptions/${prescriptionId}/dispense`, {
     method: 'POST',
-    body: JSON.stringify({ paymentId }),
+    body: JSON.stringify({ dispensedQuantities }),
   });
 };

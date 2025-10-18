@@ -80,13 +80,14 @@ export default function PatientDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Navigation currentPage="dashboard" isAuthenticated={true} userName={user?.name || 'User'} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20 lg:ml-[280px]">
-        <div className="mb-8 px-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            {t('welcome')}, {user?.name.split(' ')[0] || 'User'}!
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base">Here's your health dashboard overview</p>
-        </div>
+      <div className="lg:pl-[280px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
+          <div className="mb-8 px-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              {t('welcome')}, {user?.name.split(' ')[0] || 'User'}!
+            </h1>
+            <p className="text-gray-600 text-sm sm:text-base">Here's your health dashboard overview</p>
+          </div>
 
         {/* Error Message */}
         {error && (
@@ -333,6 +334,7 @@ export default function PatientDashboard() {
         </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );

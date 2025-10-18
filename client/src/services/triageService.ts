@@ -118,16 +118,33 @@ export const assignBed = async (assignData: AssignBedData) => {
 export const releaseBed = async (bedId: string) => {
   return apiFetch(`/beds/release/${bedId}`, {
     method: 'PUT',
+    body: JSON.stringify({}),
   });
 };
 
 // Update bed
-export const updateBed = async (
-  bedId: string,
-  updateData: { status?: string; ward?: string; notes?: string }
-) => {
+export const updateBed = async (bedId: string, updateData: Partial<CreateBedData>) => {
   return apiFetch(`/beds/${bedId}`, {
     method: 'PUT',
     body: JSON.stringify(updateData),
+  });
+};
+
+// UC-004 Step 2: Verify Patient Identity
+export const verifyPatientIdentity = async (identificationData: {
+  digitalHealthCardId?: string;
+  name?: string;
+  dateOfBirth?: string;
+}) => {
+  return apiFetch('/triage/verify-patient', {
+    method: 'POST',
+    body: JSON.stringify(identificationData),
+  });
+};
+
+// UC-004 Step 3: Access/Manage Patient Medical History
+export const getPatientMedicalHistory = async (patientId: string) => {
+  return apiFetch(`/triage/patient-history/${patientId}`, {
+    method: 'GET',
   });
 };
