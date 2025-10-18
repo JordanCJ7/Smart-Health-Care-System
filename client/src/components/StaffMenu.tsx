@@ -17,8 +17,6 @@ const pageKeyFor = (id: string) => {
       return 'staff-e-prescription';
     case 'medical-history':
       return 'staff-medical-history';
-    case 'doctor-profile':
-      return 'staff-doctor-profile';
     case 'billing':
       return 'staff-billing';
     default:
@@ -40,7 +38,6 @@ export default function StaffMenu({ currentPage }: { currentPage?: string }) {
 
   const subpages = [
     { id: 'medical-history', icon: ClipboardList, label: "Medical History" },
-    { id: 'doctor-profile', icon: User, label: "Doctor's Profile" },
     { id: 'billing', icon: CreditCard, label: 'Billing & Payment' },
   ];
 

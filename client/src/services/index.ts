@@ -13,4 +13,5 @@ export * as inventoryService from './inventoryService';
 export * as notificationService from './notificationService';
 export * as paymentService from './paymentService';
 export * as adminService from './adminService';
+export * as medicalHistoryService from './medicalHistoryService';
 export * from './api';

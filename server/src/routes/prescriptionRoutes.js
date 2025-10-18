@@ -3,6 +3,7 @@ import {
   createPrescription,
   getPendingPrescriptions,
   getAllPrescriptions,
+  searchPatients,
   getPrescriptionById,
   updatePrescriptionStatus,
   getPatientPrescriptions,
@@ -45,6 +46,13 @@ router.get(
   '/all',
   authorize('Staff', 'Admin'),
   getAllPrescriptions
+);
+
+// Search patients (Staff/Admin)
+router.get(
+  '/search/patients',
+  authorize('Staff', 'Admin'),
+  searchPatients
 );
 
 // Get staff member's prescriptions (merged from doctor route)

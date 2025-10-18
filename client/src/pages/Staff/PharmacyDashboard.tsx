@@ -1,28 +1,41 @@
 import { useEffect, useState } from 'react';
 import Navigation from '../../components/Navigation';
-import prescriptionsDataRaw from '../../mockData/prescriptionsData.json';
-import { Pill, AlertTriangle, CheckCircle, RefreshCw, Package, AlertCircle } from 'lucide-react';
+import { Pill, AlertTriangle, CheckCircle, RefreshCw, Package, AlertCircle, Loader2 } from 'lucide-react';
 import {
   checkInventoryAvailability,
   requestClarification,
   suggestAlternative,
   dispensePrescription,
+  getPendingPrescriptions,
 } from '../../services/prescriptionService';
 import { createPayment } from '../../services/paymentService';
+import { useAuth } from '../../context/AuthContext';
 
-type Prescription = typeof prescriptionsDataRaw[number] & {
-  _id?: string;
-  patientId?: { _id: string; name: string };
-  doctorId?: { _id: string; name: string };
-};
+interface Prescription {
+  _id: string;
+  patientId: { _id: string; name: string };
+  doctorId: { _id: string; name: string };
+  medications: Array<{
+    name: string;
+    dosage: string;
+    frequency: string;
+    duration?: string;
+    instructions?: string;
+  }>;
+  status: string;
+  createdAt: string;
+  refillsRemaining?: number;
+}
 
 export default function PharmacyDashboard() {
-  const [rxs, setRxs] = useState<Prescription[]>(() => JSON.parse(JSON.stringify(prescriptionsDataRaw)));
+  const { user } = useAuth();
+  const [rxs, setRxs] = useState<Prescription[]>([]);
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [selectedRx, setSelectedRx] = useState<Prescription | null>(null);
   const [showModal, setShowModal] = useState<'clarify' | 'alternative' | 'dispense' | 'inventory' | null>(null);
   const [inventoryCheck, setInventoryCheck] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // Form states
   const [clarificationReason, setClarificationReason] = useState('');
@@ -30,10 +43,23 @@ export default function PharmacyDashboard() {
   const [alternatives, setAlternatives] = useState<string[]>(['']);
   const [paymentAmount, setPaymentAmount] = useState(0);
 
-  function dispense(id: string) {
-    setRxs(prev => prev.map(r => r.prescriptionId === id ? { ...r, status: 'Dispensed' } : r));
-    showMessage('success', 'Prescription dispensed successfully');
-  }
+  useEffect(() => {
+    fetchPrescriptions();
+  }, []);
+
+  const fetchPrescriptions = async () => {
+    setLoading(true);
+    try {
+      const response = await getPendingPrescriptions();
+      if (response.success) {
+        setRxs(response.data);
+      }
+    } catch (error: any) {
+      showMessage('error', error.message || 'Failed to fetch prescriptions');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   function showMessage(type: 'success' | 'error' | 'info', text: string) {
     setMessage({ type, text });
@@ -48,10 +74,10 @@ export default function PharmacyDashboard() {
   // UC-001 Step 4: Check inventory availability
   const handleCheckInventory = async (rx: Prescription) => {
     if (!rx._id) {
-      showMessage('error', 'Demo mode: Real inventory check requires backend integration');
+      showMessage('error', 'Invalid prescription');
       return;
     }
-    setLoading(true);
+    setActionLoading(true);
     try {
       const result = await checkInventoryAvailability(rx._id);
       setInventoryCheck(result.data);
@@ -60,7 +86,7 @@ export default function PharmacyDashboard() {
     } catch (error: any) {
       showMessage('error', error.message || 'Failed to check inventory');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
@@ -70,16 +96,17 @@ export default function PharmacyDashboard() {
       showMessage('error', 'Please provide a clarification reason');
       return;
     }
-    setLoading(true);
+    setActionLoading(true);
     try {
       await requestClarification(selectedRx._id, clarificationReason);
       showMessage('success', 'Clarification request sent to doctor');
       setShowModal(null);
       setClarificationReason('');
+      fetchPrescriptions();
     } catch (error: any) {
       showMessage('error', error.message || 'Failed to send clarification request');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
@@ -89,7 +116,7 @@ export default function PharmacyDashboard() {
       showMessage('error', 'Please provide medication name and at least one alternative');
       return;
     }
-    setLoading(true);
+    setActionLoading(true);
     try {
       await suggestAlternative(
         selectedRx._id,
@@ -101,22 +128,21 @@ export default function PharmacyDashboard() {
       setShowModal(null);
       setAlternativeMed('');
       setAlternatives(['']);
+      fetchPrescriptions();
     } catch (error: any) {
       showMessage('error', error.message || 'Failed to suggest alternatives');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
   // UC-001 Steps 5-8: Dispense with payment
   const handleDispenseWithPayment = async () => {
     if (!selectedRx?._id) {
-      showMessage('error', 'Demo mode: Real dispense requires backend integration');
-      dispense(selectedRx?.prescriptionId || '');
-      setShowModal(null);
+      showMessage('error', 'Invalid prescription');
       return;
     }
-    setLoading(true);
+    setActionLoading(true);
     try {
       // First create payment if amount > 0
       let paymentId;
@@ -138,25 +164,41 @@ export default function PharmacyDashboard() {
       }
       
       setShowModal(null);
-      // Refresh prescriptions list
+      fetchPrescriptions(); // Refresh prescriptions list
     } catch (error: any) {
       showMessage('error', error.message || 'Failed to dispense prescription');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Navigation currentPage="staff-pharmacy" isAuthenticated={true} userName={'Pharm'} />
+      <Navigation currentPage="staff-pharmacy" isAuthenticated={true} userName={user?.name || 'Pharmacist'} />
+      <div className="lg:pl-[280px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pharmacy Dashboard</h1>
             <p className="text-gray-600">UC-001: E-Prescription & Pharmacy Dispense</p>
           </div>
-          <div>
-            <button onClick={() => showMessage('info', 'Stock management opened (demo)')} className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:shadow-lg transition">
+          <div className="flex gap-2">
+            <button 
+              onClick={fetchPrescriptions}
+              disabled={loading}
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:shadow-lg transition disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
+                <>
+                  <RefreshCw className="inline h-4 w-4 mr-2" />
+                  Refresh
+                </>
+              )}
+            </button>
+            <button 
+              onClick={() => showMessage('info', 'Stock management opened (demo)')} 
+              className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:shadow transition"
+            >
               <Package className="inline h-4 w-4 mr-2" />
               Manage Stock
             </button>
@@ -181,54 +223,60 @@ export default function PharmacyDashboard() {
             <h2 className="text-lg font-semibold mb-4 flex items-center">
               <Pill className="h-5 w-5 mr-2 text-pink-600" /> Pending Prescriptions (UC-001 Step 1)
             </h2>
-            <div className="space-y-3">
-              {rxs.map(r => (
-                <div key={r.prescriptionId} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <div className="font-semibold text-lg">{r.doctorName}</div>
-                      <div className="text-sm text-gray-600">{r.date}</div>
-                      <div className="text-sm text-gray-700 mt-1">
-                        <strong>Medications:</strong> {r.medications.map(m => m.name).join(', ')}
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
+              </div>
+            ) : rxs.length > 0 ? (
+              <div className="space-y-3">
+                {rxs.map(r => (
+                  <div key={r._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <div className="font-semibold text-lg">{r.doctorId?.name || 'Unknown Doctor'}</div>
+                        <div className="text-sm text-gray-600">Patient: {r.patientId?.name || 'Unknown'}</div>
+                        <div className="text-sm text-gray-600">{new Date(r.createdAt).toLocaleDateString()}</div>
+                        <div className="text-sm text-gray-700 mt-1">
+                          <strong>Medications:</strong> {r.medications.map(m => `${m.name} (${m.dosage})`).join(', ')}
+                        </div>
                       </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        r.status === 'Dispensed' ? 'bg-green-100 text-green-800' :
+                        r.status === 'Pending' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {r.status}
+                      </span>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      r.status === 'Dispensed' ? 'bg-green-100 text-green-800' :
-                      r.status === 'Active' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {r.status}
-                    </span>
-                  </div>
 
-                  {r.status !== 'Dispensed' && (
-                    <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
-                      <button
-                        onClick={() => { setSelectedRx(r); handleCheckInventory(r); }}
-                        className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm flex items-center"
-                        disabled={loading}
-                      >
-                        <Package className="h-4 w-4 mr-1" />
-                        Check Inventory (Step 4)
-                      </button>
-                      <button
-                        onClick={() => { setSelectedRx(r); setShowModal('clarify'); }}
-                        className="px-3 py-1.5 bg-orange-600 text-white rounded hover:bg-orange-700 text-sm flex items-center"
-                      >
-                        <AlertTriangle className="h-4 w-4 mr-1" />
-                        Clarify (Ext 3a)
-                      </button>
-                      <button
-                        onClick={() => { setSelectedRx(r); setShowModal('alternative'); }}
-                        className="px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex items-center"
-                      >
-                        <RefreshCw className="h-4 w-4 mr-1" />
-                        Suggest Alt (Ext 4a)
-                      </button>
-                      <button
-                        onClick={() => { setSelectedRx(r); setShowModal('dispense'); setPaymentAmount(50); }}
-                        className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex items-center"
-                      >
+                    {r.status !== 'Dispensed' && (
+                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
+                        <button
+                          onClick={() => { setSelectedRx(r); handleCheckInventory(r); }}
+                          className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm flex items-center"
+                          disabled={actionLoading}
+                        >
+                          <Package className="h-4 w-4 mr-1" />
+                          Check Inventory (Step 4)
+                        </button>
+                        <button
+                          onClick={() => { setSelectedRx(r); setShowModal('clarify'); }}
+                          className="px-3 py-1.5 bg-orange-600 text-white rounded hover:bg-orange-700 text-sm flex items-center"
+                        >
+                          <AlertTriangle className="h-4 w-4 mr-1" />
+                          Clarify (Ext 3a)
+                        </button>
+                        <button
+                          onClick={() => { setSelectedRx(r); setShowModal('alternative'); }}
+                          className="px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex items-center"
+                        >
+                          <RefreshCw className="h-4 w-4 mr-1" />
+                          Suggest Alt (Ext 4a)
+                        </button>
+                        <button
+                          onClick={() => { setSelectedRx(r); setShowModal('dispense'); setPaymentAmount(50); }}
+                          className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex items-center"
+                        >
                         <CheckCircle className="h-4 w-4 mr-1" />
                         Dispense (Step 5-8)
                       </button>
@@ -237,6 +285,11 @@ export default function PharmacyDashboard() {
                 </div>
               ))}
             </div>
+            ) : (
+              <div className="text-center py-10 text-gray-500">
+                No pending prescriptions at the moment.
+              </div>
+            )}
           </div>
 
           <aside className="bg-white shadow-xl rounded-2xl">
@@ -259,8 +312,7 @@ export default function PharmacyDashboard() {
             </div>
           </aside>
         </div>
-
-        {/* Modals */}
+      </div>        {/* Modals */}
         {showModal === 'clarify' && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 max-w-md w-full">

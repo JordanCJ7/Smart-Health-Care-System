@@ -22,7 +22,6 @@ type Page =
   | 'staff-pharmacy'
   | 'staff-e-prescription'
   | 'staff-medical-history'
-  | 'staff-doctor-profile'
   | 'staff-billing';
 
 let currentPage: Page = 'home';
@@ -83,8 +82,6 @@ const pageToPath = (page: Page) => {
       return '/staff/e-prescription';
     case 'staff-medical-history':
       return '/staff/medical-history';
-    case 'staff-doctor-profile':
-      return '/staff/doctor-profile';
     case 'staff-billing':
       return '/staff/billing';
     default:

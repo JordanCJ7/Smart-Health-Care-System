@@ -26,7 +26,6 @@ import LabTechnicianDashboard from './pages/Staff/LabTechnicianDashboard';
 import PharmacyDashboard from './pages/Staff/PharmacyDashboard';
 import EPrescription from './pages/Staff/EPrescription';
 import MedicalHistory from './pages/Staff/MedicalHistory';
-import DoctorProfile from './pages/Staff/DoctorProfile';
 import Billing from './pages/Staff/Billing';
 import { useEffect } from 'react';
 import { useNavigate as rrNavigate } from 'react-router-dom';
@@ -78,7 +77,6 @@ function App() {
             <Route path="pharmacy" element={<ProtectedRoute requiredRole="Staff"><PharmacyDashboard /></ProtectedRoute>} />
             <Route path="e-prescription" element={<ProtectedRoute requiredRole="Staff"><EPrescription /></ProtectedRoute>} />
             <Route path="medical-history" element={<ProtectedRoute requiredRole="Staff"><MedicalHistory /></ProtectedRoute>} />
-            <Route path="doctor-profile" element={<ProtectedRoute requiredRole="Staff"><DoctorProfile /></ProtectedRoute>} />
             <Route path="billing" element={<ProtectedRoute requiredRole="Staff"><Billing /></ProtectedRoute>} />
           </Route>
         </Routes>

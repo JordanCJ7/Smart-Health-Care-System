@@ -71,6 +71,32 @@ export const getAllPrescriptions = asyncHandler(async (req, res) => {
   sendSuccess(res, prescriptions);
 });
 
+// @desc    Search patients (staff only)
+// @route   GET /api/prescriptions/search/patients
+// @access  Private (Staff, Admin)
+export const searchPatients = asyncHandler(async (req, res) => {
+  const { search = '' } = req.query;
+
+  const query = { role: 'Patient' };
+  
+  if (search && search.length >= 2) {
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const patients = await User.find(query)
+    .select('_id name email dateOfBirth bloodType gender phone')
+    .limit(20)
+    .lean();
+
+  sendSuccess(res, {
+    users: patients,
+    count: patients.length
+  });
+});
+
 // @desc    Get prescription by ID
 // @route   GET /api/prescriptions/:id
 // @access  Private

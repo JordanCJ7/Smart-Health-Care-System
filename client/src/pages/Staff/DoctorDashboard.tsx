@@ -28,6 +28,19 @@ export default function DoctorDashboard() {
     [appointments, today]
   );
 
+  const upcomingAppointments = useMemo(
+    () => appointments.filter(a => 
+      new Date(a.date) > new Date(today) && 
+      ['Scheduled', 'Confirmed'].includes(a.status)
+    ),
+    [appointments, today]
+  );
+
+  const completedAppointments = useMemo(
+    () => appointments.filter(a => a.status === 'Completed'),
+    [appointments]
+  );
+
   useEffect(() => {
     fetchAppointments();
   }, []);
@@ -94,8 +107,9 @@ export default function DoctorDashboard() {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="lg:col-span-2 liquid-glass rounded-2xl p-6 shadow-xl">
+        <div className="grid lg:grid-cols-1 gap-4 sm:gap-6 mb-6">
+          {/* Today's Appointments */}
+          <div className="liquid-glass rounded-2xl p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-600" /> Today's Appointments
@@ -108,39 +122,30 @@ export default function DoctorDashboard() {
                 <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
               </div>
             ) : todaysAppointments.length > 0 ? (
-              <div className="space-y-3">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {todaysAppointments.map(a => (
-                  <div key={a._id} className="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-semibold text-lg">
-                          {a.patientId?.name || 'Unknown Patient'}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                          {new Date(a.date).toLocaleDateString()} • {a.time}
-                        </div>
-                        {a.reason && (
-                          <div className="text-sm text-gray-600 mt-1">
-                            Reason: {a.reason}
-                          </div>
-                        )}
-                        {a.department && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            Department: {a.department}
-                          </div>
-                        )}
+                  <div key={a._id} className="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow bg-white">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="font-semibold text-base">
+                        {a.patientId?.name || 'Unknown Patient'}
                       </div>
-                      <div className="text-right">
-                        <span className={`px-3 py-1 text-xs rounded-full ${
-                          a.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                          a.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' :
-                          a.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {a.status}
-                        </span>
-                      </div>
+                      <span className={`px-2 py-0.5 text-xs rounded-full ${
+                        a.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                        a.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' :
+                        a.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {a.status}
+                      </span>
                     </div>
+                    <div className="text-sm text-gray-600">
+                      {a.time}
+                    </div>
+                    {a.reason && (
+                      <div className="text-xs text-gray-600 mt-2">
+                        {a.reason}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -150,36 +155,127 @@ export default function DoctorDashboard() {
               </div>
             )}
           </div>
+        </div>
 
-          <aside className="liquid-glass shadow-xl rounded-2xl">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <User className="h-5 w-5 mr-2 text-indigo-600" /> Statistics
-              </h3>
-              <div className="divide-y divide-gray-100">
-                <div className="py-3 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">Total Appointments</div>
-                  <div className="font-semibold">{appointments.length}</div>
-                </div>
-                <div className="py-3 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">Today</div>
-                  <div className="font-semibold">{todaysAppointments.length}</div>
-                </div>
-                <div className="py-3 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">Completed</div>
-                  <div className="font-semibold text-green-600">
-                    {appointments.filter(a => a.status === 'Completed').length}
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Upcoming Appointments */}
+          <div className="liquid-glass rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-purple-600" /> Upcoming Appointments
+              </h2>
+              <div className="text-sm text-gray-600">{upcomingAppointments.length} upcoming</div>
+            </div>
+
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="animate-spin h-8 w-8 text-purple-600" />
+              </div>
+            ) : upcomingAppointments.length > 0 ? (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {upcomingAppointments.slice(0, 10).map(a => (
+                  <div key={a._id} className="border border-gray-100 rounded-lg p-3 hover:shadow-md transition-shadow bg-white">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="font-semibold text-sm">
+                          {a.patientId?.name || 'Unknown Patient'}
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          {new Date(a.date).toLocaleDateString()} • {a.time}
+                        </div>
+                        {a.reason && (
+                          <div className="text-xs text-gray-600 mt-1">
+                            {a.reason}
+                          </div>
+                        )}
+                      </div>
+                      <span className={`px-2 py-0.5 text-xs rounded-full ${
+                        a.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {a.status}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="py-3 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">Upcoming</div>
-                  <div className="font-semibold text-blue-600">
-                    {appointments.filter(a => ['Scheduled', 'Confirmed'].includes(a.status)).length}
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 text-gray-500">
+                No upcoming appointments.
+              </div>
+            )}
+          </div>
+
+          {/* Completed Appointments */}
+          <div className="liquid-glass rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-green-600" /> Completed Appointments
+              </h2>
+              <div className="text-sm text-gray-600">{completedAppointments.length} completed</div>
+            </div>
+
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="animate-spin h-8 w-8 text-green-600" />
+              </div>
+            ) : completedAppointments.length > 0 ? (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {completedAppointments.slice(0, 10).map(a => (
+                  <div key={a._id} className="border border-gray-100 rounded-lg p-3 hover:shadow-md transition-shadow bg-white">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="font-semibold text-sm">
+                          {a.patientId?.name || 'Unknown Patient'}
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          {new Date(a.date).toLocaleDateString()} • {a.time}
+                        </div>
+                        {a.reason && (
+                          <div className="text-xs text-gray-600 mt-1">
+                            {a.reason}
+                          </div>
+                        )}
+                      </div>
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">
+                        Completed
+                      </span>
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 text-gray-500">
+                No completed appointments yet.
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <div className="liquid-glass shadow-xl rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-3 flex items-center">
+              <User className="h-5 w-5 mr-2 text-indigo-600" /> Appointment Statistics
+            </h3>
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="p-4 bg-white rounded-lg border border-gray-100">
+                <div className="text-sm text-gray-600 mb-1">Total</div>
+                <div className="text-2xl font-bold text-gray-900">{appointments.length}</div>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="text-sm text-blue-600 mb-1">Today</div>
+                <div className="text-2xl font-bold text-blue-700">{todaysAppointments.length}</div>
+              </div>
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="text-sm text-purple-600 mb-1">Upcoming</div>
+                <div className="text-2xl font-bold text-purple-700">{upcomingAppointments.length}</div>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-100">
+                <div className="text-sm text-green-600 mb-1">Completed</div>
+                <div className="text-2xl font-bold text-green-700">{completedAppointments.length}</div>
               </div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
       </div>

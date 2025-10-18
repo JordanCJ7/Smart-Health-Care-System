@@ -73,7 +73,7 @@ export const getPatientPrescriptions = async (patientId: string) => {
 
 // Get doctor's prescriptions
 export const getDoctorPrescriptions = async () => {
-  return apiFetch('/prescriptions/doctor/me', {
+  return apiFetch('/prescriptions/staff/me', {
     method: 'GET',
   });
 };
