@@ -275,7 +275,7 @@ export const updateTriageRecord = asyncHandler(async (req, res) => {
   if (symptoms) record.symptoms = symptoms;
   if (severityLevel) record.severityLevel = severityLevel;
   if (admissionStatus) record.admissionStatus = admissionStatus;
-  if (assignedBed) record.assignedBed = assignedBed;
+  if (assignedBed !== undefined) record.assignedBed = assignedBed; // Allow null to clear bed
   if (notes !== undefined) record.notes = notes;
 
   await record.save();

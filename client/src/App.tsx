@@ -17,7 +17,6 @@ import DataSync from './pages/Admin/DataSync';
 import PatientSupport from './pages/Admin/PatientSupport';
 import PoliciesFaqs from './pages/Admin/PoliciesFaqs';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import StaffLayout from './pages/Staff/StaffLayout';
 import StaffDashboard from './pages/Staff/StaffDashboard';
@@ -96,7 +95,6 @@ function App() {
           </Route>
         </Routes>
       </main>
-      <Footer />
     </div>
   );
 }
