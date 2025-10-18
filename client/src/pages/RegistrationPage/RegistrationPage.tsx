@@ -56,6 +56,9 @@ export default function RegistrationPage() {
 
     try {
       // Prepare registration data for the API
+      // Format address as a single string matching User model (address: String)
+      const fullAddress = `${formData.address}, ${formData.city}, ${formData.state} ${formData.zipCode}`;
+      
       const registrationData = {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
@@ -65,15 +68,10 @@ export default function RegistrationPage() {
         dateOfBirth: formData.dateOfBirth,
         gender: formData.gender,
         bloodType: formData.bloodType,
-        address: {
-          street: formData.address,
-          city: formData.city,
-          state: formData.state,
-          zipCode: formData.zipCode
-        },
+        address: fullAddress, // String format matching User model
         emergencyContact: {
           name: formData.emergencyContactName,
-          relation: formData.emergencyContactRelation,
+          relationship: formData.emergencyContactRelation, // Match User model field name
           phone: formData.emergencyContactPhone
         },
         insurance: {

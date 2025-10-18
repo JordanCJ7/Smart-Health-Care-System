@@ -1,11 +1,13 @@
-import { ClipboardList, UserCheck, Activity, Beaker, Box, FileText, CreditCard, User } from 'lucide-react';
+import { ClipboardList, UserCheck, Activity, Beaker, Box, FileText, CreditCard, User, LayoutDashboard } from 'lucide-react';
 import { useNavigate } from '../pages/navigation';
 import { useLanguage } from '../context/LanguageContext';
 
 // Map soft ids to navigation Page keys
 const pageKeyFor = (id: string) => {
   switch (id) {
-    case 'staff':
+    case 'dashboard':
+      return 'staff';
+    case 'triage':
       return 'staff';
     case 'doctor':
       return 'staff-doctor';
@@ -29,7 +31,8 @@ export default function StaffMenu({ currentPage }: { currentPage?: string }) {
   const { t } = useLanguage();
 
   const items = [
-    { id: 'staff', icon: Activity, label: 'Triage & Admission' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Staff Dashboard' },
+    { id: 'triage', icon: Activity, label: 'Triage & Admission' },
     { id: 'doctor', icon: UserCheck, label: 'Doctor Dashboard' },
     { id: 'lab', icon: Beaker, label: 'Lab Technician' },
     { id: 'pharmacy', icon: Box, label: 'Pharmacy' },

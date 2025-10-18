@@ -21,17 +21,25 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
 
   const { user } = useAuth();
 
+  // Determine the correct dashboard route based on user role
+  const getDashboardRoute = () => {
+    if (!user) return 'home';
+    if (user.role === 'Staff') return 'staff';
+    if (user.role === 'Admin') return 'admin';
+    return 'dashboard'; // Patient dashboard
+  };
+
   const navItems = isAuthenticated
     ? [
-        { id: 'dashboard', icon: Home, label: t('home') },
-        { id: 'appointments', icon: Calendar, label: t('appointments') },
-        { id: 'lab-results', icon: FileText, label: t('labResults') },
-        { id: 'prescriptions', icon: Pill, label: t('prescriptions') },
-        { id: 'health-card', icon: CreditCard, label: t('healthCard') },
-        { id: 'profile', icon: User, label: t('profile') },
+        { id: 'dashboard', icon: Home, label: t('home'), route: getDashboardRoute() },
+        { id: 'appointments', icon: Calendar, label: t('appointments'), route: 'appointments' },
+        { id: 'lab-results', icon: FileText, label: t('labResults'), route: 'lab-results' },
+        { id: 'prescriptions', icon: Pill, label: t('prescriptions'), route: 'prescriptions' },
+        { id: 'health-card', icon: CreditCard, label: t('healthCard'), route: 'health-card' },
+        { id: 'profile', icon: User, label: t('profile'), route: 'profile' },
       ]
     : [
-        { id: 'home', icon: Home, label: t('home') },
+        { id: 'home', icon: Home, label: t('home'), route: 'home' },
       ];
 
   return (
@@ -53,7 +61,7 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
                 </button>
               )}
 
-              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate(isAuthenticated ? 'dashboard' : 'home')}>
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate(getDashboardRoute() as any)}>
                 <div className="relative">
                   <Heart className="h-9 w-9 text-blue-600" />
                   <div className="absolute inset-0 bg-blue-600 blur-lg opacity-30 animate-pulse"></div>
@@ -186,7 +194,7 @@ export default function Navigation({ currentPage, isAuthenticated = false, userN
                       return (
                         <button
                           key={item.id}
-                          onClick={() => navigate(item.id as any)}
+                          onClick={() => navigate(item.route as any)}
                           className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                             isActive
                               ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg scale-105'

@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage/HomePage';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import PatientDashboard from './pages/PatientDashboard/PatientDashboard';
+import PatientDashboardWrapper from './pages/PatientDashboard/PatientDashboardWrapper';
 import AppointmentPage from './pages/AppointmentPage/AppointmentPage';
 import LabResultsPage from './pages/LabResultsPage/LabResultsPage';
 import PrescriptionPage from './pages/PrescriptionPage/PrescriptionPage';
@@ -20,6 +20,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import StaffLayout from './pages/Staff/StaffLayout';
+import StaffDashboard from './pages/Staff/StaffDashboard';
 import TriageAdmission from './pages/Staff/TriageAdmission';
 import DoctorDashboard from './pages/Staff/DoctorDashboard';
 import LabTechnicianDashboard from './pages/Staff/LabTechnicianDashboard';
@@ -27,6 +28,12 @@ import PharmacyDashboard from './pages/Staff/PharmacyDashboard';
 import EPrescription from './pages/Staff/EPrescription';
 import MedicalHistory from './pages/Staff/MedicalHistory';
 import Billing from './pages/Staff/Billing';
+// Static Pages
+import AboutUs from './pages/StaticPages/AboutUs';
+import ContactUs from './pages/StaticPages/ContactUs';
+import PrivacyPolicy from './pages/StaticPages/PrivacyPolicy';
+import FAQ from './pages/StaticPages/FAQ';
+import TermsOfService from './pages/StaticPages/TermsOfService';
 import { useEffect } from 'react';
 import { useNavigate as rrNavigate } from 'react-router-dom';
 import { setRouterNavigate } from './pages/navigation';
@@ -49,12 +56,19 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<PatientDashboard />} />
+          <Route path="/dashboard" element={<PatientDashboardWrapper />} />
           <Route path="/appointments" element={<AppointmentPage />} />
           <Route path="/lab-results" element={<LabResultsPage />} />
           <Route path="/prescriptions" element={<PrescriptionPage />} />
           <Route path="/profile" element={<ProfileManagementPage />} />
           <Route path="/health-card" element={<DigitalHealthCard />} />
+
+          {/* Static Pages */}
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/terms" element={<TermsOfService />} />
 
           {/* Admin protected routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole="Admin"><AdminDashboard /></ProtectedRoute>} />
@@ -70,8 +84,9 @@ function App() {
 
           {/* Staff protected routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole="Staff"><StaffLayout /></ProtectedRoute>}>
-            <Route index element={<Navigate to="/staff/staff" replace />} />
-            <Route path="staff" element={<ProtectedRoute requiredRole="Staff"><TriageAdmission /></ProtectedRoute>} />
+            <Route index element={<Navigate to="/staff/dashboard" replace />} />
+            <Route path="dashboard" element={<ProtectedRoute requiredRole="Staff"><StaffDashboard /></ProtectedRoute>} />
+            <Route path="triage" element={<ProtectedRoute requiredRole="Staff"><TriageAdmission /></ProtectedRoute>} />
             <Route path="doctor" element={<ProtectedRoute requiredRole="Staff"><DoctorDashboard /></ProtectedRoute>} />
             <Route path="lab" element={<ProtectedRoute requiredRole="Staff"><LabTechnicianDashboard /></ProtectedRoute>} />
             <Route path="pharmacy" element={<ProtectedRoute requiredRole="Staff"><PharmacyDashboard /></ProtectedRoute>} />

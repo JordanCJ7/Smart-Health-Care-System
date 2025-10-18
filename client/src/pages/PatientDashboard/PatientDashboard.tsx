@@ -40,7 +40,11 @@ export default function PatientDashboard() {
         }
 
         if (appointmentsRes.success && appointmentsRes.data) {
-          setAppointments(appointmentsRes.data);
+          // Filter to only show patient's own appointments
+          const patientAppointments = appointmentsRes.data.filter(
+            (apt: any) => apt.patientId?._id === user._id || apt.patientId === user._id
+          );
+          setAppointments(patientAppointments);
         }
         
         if (labResultsRes && labResultsRes.success && labResultsRes.data) {
@@ -50,7 +54,7 @@ export default function PatientDashboard() {
         if (prescriptionsRes.success && prescriptionsRes.data) {
           // Filter active prescriptions
           const activePrescriptions = prescriptionsRes.data.filter(
-            (rx: any) => rx.status === 'Pending' || rx.status === 'Active'
+            (rx: any) => rx.status === 'Pending' || rx.status === 'Active' || rx.status === 'Dispensed'
           );
           setPrescriptions(activePrescriptions);
         }
@@ -65,7 +69,13 @@ export default function PatientDashboard() {
     fetchDashboardData();
   }, [user]);
 
-  const upcomingAppointments = appointments.filter(apt => apt.status === 'Scheduled');
+  // Filter upcoming appointments: Scheduled status and future dates
+  const upcomingAppointments = appointments.filter(apt => {
+    const appointmentDate = new Date(apt.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return (apt.status === 'Scheduled' || apt.status === 'Confirmed') && appointmentDate >= today;
+  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const quickActions = [
     { icon: Calendar, label: t('bookAppointment'), color: 'blue', action: () => navigate('appointments') },
