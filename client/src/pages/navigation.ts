@@ -17,6 +17,7 @@ type Page =
   | 'patient-support'
   | 'policies-faqs'
   | 'staff'
+  | 'staff-triage'
   | 'staff-doctor'
   | 'staff-lab'
   | 'staff-pharmacy'
@@ -71,7 +72,9 @@ const pageToPath = (page: Page) => {
     case 'policies-faqs':
       return '/admin/policies';
     case 'staff':
-      return '/staff';
+      return '/staff/dashboard';
+    case 'staff-triage':
+      return '/staff/triage';
     case 'staff-doctor':
       return '/staff/doctor';
     case 'staff-lab':

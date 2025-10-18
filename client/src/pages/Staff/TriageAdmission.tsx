@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Navigation from '../../components/Navigation';
 import { Clock, User, Search, AlertCircle } from 'lucide-react';
-import { getTriageRecords, getAllBeds, assignBed, releaseBed } from '../../services/triageService';
+import { getTriageRecords, getAllBeds, assignBed, releaseBed, updateTriageRecord } from '../../services/triageService';
 import { useAuth } from '../../context/AuthContext';
 
 interface TriageItem {
@@ -48,6 +48,7 @@ export default function TriageAdmission() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [releasingBedId, setReleasingBedId] = useState<string | null>(null);
   const [patientSearch, setPatientSearch] = useState('');
   const [showPatientVerify, setShowPatientVerify] = useState(false);
 
@@ -136,20 +137,49 @@ export default function TriageAdmission() {
 
   // UC-004: Release bed functionality
   async function handleReleaseBed(item: TriageItem) {
-    if (!item.assignedBed) return;
+    if (!item.assignedBed) {
+      setError('No bed assigned to this patient');
+      return;
+    }
+    
+    const bedId = item.assignedBed._id;
+    const bedNumber = item.assignedBed.bedNumber;
     
     try {
-      setLoading(true);
-      const response = await releaseBed(item.assignedBed._id);
+      setReleasingBedId(bedId);
+      setError(null);
+      setMessage(null);
       
-      if (response.success) {
-        setMessage(`Released bed ${item.assignedBed.bedNumber} from ${item.patientId.name}`);
+      console.log('Starting to release bed:', { bedId, bedNumber, patientName: item.patientId.name });
+      
+      // Release the bed
+      const response = await releaseBed(bedId);
+      console.log('Release bed response:', response);
+      
+      if (response?.success) {
+        // Also update the triage record to mark as Discharged and clear assigned bed
+        try {
+          const triageUpdateResponse = await updateTriageRecord(item._id, {
+            admissionStatus: 'Discharged',
+            assignedBed: null as any, // Explicitly set to null to clear the bed reference
+          });
+          console.log('Triage update response:', triageUpdateResponse);
+        } catch (triageErr) {
+          console.warn('Failed to update triage record:', triageErr);
+          // Don't fail the entire operation if triage update fails
+        }
+        
+        setMessage(`Successfully released bed ${bedNumber} from ${item.patientId.name}`);
+        // Refresh the triage and beds data
         await fetchTriageAndBeds();
+      } else {
+        setError(response?.error || 'Failed to release bed. Please try again.');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to release bed');
+      console.error('Release bed error:', err);
+      setError(err.message || 'Failed to release bed. Please check the bed status and try again.');
     } finally {
-      setLoading(false);
+      setReleasingBedId(null);
     }
   }
 
@@ -290,10 +320,14 @@ export default function TriageAdmission() {
                       {item.assignedBed && (
                         <button 
                           onClick={() => handleReleaseBed(item)} 
-                          className="px-4 py-2 text-red-700 transition-colors bg-white border-2 border-red-200 rounded-lg shadow-md hover:bg-red-50"
-                          disabled={loading}
+                          className={`px-4 py-2 text-red-700 transition-colors rounded-lg shadow-md font-semibold ${
+                            releasingBedId === item.assignedBed._id
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-2 border-gray-200' 
+                              : 'bg-white border-2 border-red-200 hover:bg-red-50 cursor-pointer'
+                          }`}
+                          disabled={releasingBedId === item.assignedBed._id}
                         >
-                          Release Bed
+                          {releasingBedId === item.assignedBed._id ? 'Releasing...' : 'Release Bed'}
                         </button>
                       )}
                     </div>

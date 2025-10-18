@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '../../components/Navigation';
 import { 
   Calendar, FileText, Pill, CreditCard, User, Activity, 
-  Clock, AlertCircle, Loader2, Stethoscope, Users 
+  Clock, AlertCircle, Loader2, Stethoscope, Users, Heart 
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import * as appointmentService from '../../services/appointmentService';
@@ -11,6 +12,7 @@ import * as prescriptionService from '../../services/prescriptionService';
 
 export default function StaffDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [labResults, setLabResults] = useState<any[]>([]);
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
@@ -192,6 +194,17 @@ export default function StaffDashboard() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Quick Action: Triage Button */}
+              <div className="mb-8 flex justify-end">
+                <button
+                  onClick={() => navigate('/staff/triage')}
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105"
+                >
+                  <Heart className="h-5 w-5" />
+                  Go to Triage
+                </button>
               </div>
 
               {/* Tab Navigation */}

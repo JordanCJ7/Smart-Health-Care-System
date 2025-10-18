@@ -8,7 +8,7 @@ const pageKeyFor = (id: string) => {
     case 'dashboard':
       return 'staff';
     case 'triage':
-      return 'staff';
+      return 'staff-triage';
     case 'doctor':
       return 'staff-doctor';
     case 'lab':
