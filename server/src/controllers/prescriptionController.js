@@ -196,7 +196,7 @@ export const getDoctorPrescriptions = asyncHandler(async (req, res) => {
   sendSuccess(res, prescriptions);
 });
 
-// @desc    Check inventory availability for prescription (UC-001 Step 4)
+// @desc    Check inventory availability for prescription
 // @route   POST /api/prescriptions/:id/check-inventory
 // @access  Private (Pharmacist/Staff)
 export const checkInventoryAvailability = asyncHandler(async (req, res) => {
@@ -325,7 +325,7 @@ export const suggestAlternative = asyncHandler(async (req, res) => {
   sendSuccess(res, prescription, 'Alternative suggestions sent to doctor', 200);
 });
 
-// @desc    Dispense prescription with inventory check (UC-001 Steps 5-8)
+// @desc    Dispense prescription with inventory check 
 // @route   POST /api/prescriptions/:id/dispense
 // @access  Private (Pharmacist/Staff)
 export const dispensePrescription = asyncHandler(async (req, res) => {

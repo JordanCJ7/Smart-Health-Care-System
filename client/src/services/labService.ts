@@ -24,7 +24,7 @@ export interface RejectSampleData {
   qualityStatus?: 'Poor' | 'Contaminated' | 'Insufficient';
 }
 
-// UC-003 Step 1, 3, 4: Create lab order (Doctor/Staff)
+// Create lab order (Doctor/Staff)
 export const createLabOrder = async (orderData: CreateLabOrderData) => {
   return apiFetch('/labs/order', {
     method: 'POST',
@@ -32,7 +32,7 @@ export const createLabOrder = async (orderData: CreateLabOrderData) => {
   });
 };
 
-// UC-003 Step 5: Get pending lab orders (Lab Technician/Staff)
+// Get pending lab orders (Lab Technician/Staff)
 export const getPendingLabOrders = async (filters?: { status?: string; priority?: string }) => {
   const queryParams = new URLSearchParams(filters as Record<string, string>).toString();
   const endpoint = queryParams ? `/labs/orders?${queryParams}` : '/labs/orders';
@@ -64,7 +64,7 @@ export const getLabOrderById = async (orderId: string) => {
   });
 };
 
-// UC-003 Step 6: Collect sample
+// Collect sample
 export const collectSample = async (orderId: string) => {
   return apiFetch(`/labs/collect-sample/${orderId}`, {
     method: 'PUT',
@@ -72,7 +72,7 @@ export const collectSample = async (orderId: string) => {
   });
 };
 
-// UC-003 Step 7a (Extension): Reject sample due to poor quality
+// Reject sample due to poor quality
 export const rejectSample = async (orderId: string, rejectData: RejectSampleData) => {
   return apiFetch(`/labs/reject-sample/${orderId}`, {
     method: 'PUT',
@@ -80,7 +80,7 @@ export const rejectSample = async (orderId: string, rejectData: RejectSampleData
   });
 };
 
-// UC-003 Step 7, 8, 8a, 9: Update lab results (Lab Technician/Staff)
+// Update lab results (Lab Technician/Staff)
 export const updateLabResults = async (orderId: string, resultsData: UpdateLabResultsData) => {
   return apiFetch(`/labs/results/${orderId}`, {
     method: 'PUT',
@@ -88,7 +88,7 @@ export const updateLabResults = async (orderId: string, resultsData: UpdateLabRe
   });
 };
 
-// UC-003 Step 10: Add doctor interpretation
+// Add doctor interpretation
 export const addDoctorInterpretation = async (orderId: string, interpretationData: DoctorInterpretationData) => {
   return apiFetch(`/labs/interpretation/${orderId}`, {
     method: 'PUT',
@@ -96,7 +96,7 @@ export const addDoctorInterpretation = async (orderId: string, interpretationDat
   });
 };
 
-// UC-003 Step 8a (Extension): Acknowledge critical value alert
+// Acknowledge critical value alert
 export const acknowledgeCriticalAlert = async (orderId: string) => {
   return apiFetch(`/labs/acknowledge-critical/${orderId}`, {
     method: 'PUT',

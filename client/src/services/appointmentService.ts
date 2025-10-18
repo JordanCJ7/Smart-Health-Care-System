@@ -20,7 +20,7 @@ export interface UpdateAppointmentData {
   reason?: string;
 }
 
-// Create appointment (UC-002 Step 6)
+// Create appointment
 export const createAppointment = async (appointmentData: CreateAppointmentData) => {
   return apiFetch('/appointments', {
     method: 'POST',

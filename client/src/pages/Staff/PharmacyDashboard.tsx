@@ -71,7 +71,7 @@ export default function PharmacyDashboard() {
     return () => clearTimeout(id);
   }, [message]);
 
-  // UC-001 Step 4: Check inventory availability
+  // Check inventory availability
   const handleCheckInventory = async (rx: Prescription) => {
     if (!rx._id) {
       showMessage('error', 'Invalid prescription');
@@ -136,7 +136,7 @@ export default function PharmacyDashboard() {
     }
   };
 
-  // UC-001 Steps 5-8: Dispense with payment
+  // Dispense with payment
   const handleDispenseWithPayment = async () => {
     if (!selectedRx?._id) {
       showMessage('error', 'Invalid prescription');
@@ -176,30 +176,30 @@ export default function PharmacyDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Navigation currentPage="staff-pharmacy" isAuthenticated={true} userName={user?.name || 'Pharmacist'} />
       <div className="lg:pl-[280px]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+      <div className="px-4 py-8 pt-24 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pharmacy Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Pharmacy Dashboard</h1>
             <p className="text-gray-600">UC-001: E-Prescription & Pharmacy Dispense</p>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={fetchPrescriptions}
               disabled={loading}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:shadow-lg transition disabled:opacity-50"
+              className="px-4 py-2 text-white transition rounded-lg bg-gradient-to-r from-blue-600 to-green-600 hover:shadow-lg disabled:opacity-50"
             >
-              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
-                  <RefreshCw className="inline h-4 w-4 mr-2" />
+                  <RefreshCw className="inline w-4 h-4 mr-2" />
                   Refresh
                 </>
               )}
             </button>
             <button 
               onClick={() => showMessage('info', 'Stock management opened (demo)')} 
-              className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:shadow transition"
+              className="px-4 py-2 transition bg-white border border-gray-200 rounded-lg hover:shadow"
             >
-              <Package className="inline h-4 w-4 mr-2" />
+              <Package className="inline w-4 h-4 mr-2" />
               Manage Stock
             </button>
           </div>
@@ -211,32 +211,32 @@ export default function PharmacyDashboard() {
             message.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' :
             'bg-blue-50 border-blue-200 text-blue-800'
           }`}>
-            {message.type === 'success' && <CheckCircle className="h-5 w-5 mr-2" />}
-            {message.type === 'error' && <AlertCircle className="h-5 w-5 mr-2" />}
-            {message.type === 'info' && <AlertTriangle className="h-5 w-5 mr-2" />}
+            {message.type === 'success' && <CheckCircle className="w-5 h-5 mr-2" />}
+            {message.type === 'error' && <AlertCircle className="w-5 h-5 mr-2" />}
+            {message.type === 'info' && <AlertTriangle className="w-5 h-5 mr-2" />}
             {message.text}
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 flex items-center">
-              <Pill className="h-5 w-5 mr-2 text-pink-600" /> Pending Prescriptions (UC-001 Step 1)
+        <div className="grid gap-4 lg:grid-cols-3 sm:gap-6">
+          <div className="p-6 bg-white shadow-xl lg:col-span-2 rounded-2xl">
+            <h2 className="flex items-center mb-4 text-lg font-semibold">
+              <Pill className="w-5 h-5 mr-2 text-pink-600" /> Pending Prescription
             </h2>
             {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
               </div>
             ) : rxs.length > 0 ? (
               <div className="space-y-3">
                 {rxs.map(r => (
-                  <div key={r._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                    <div className="flex justify-between items-start mb-3">
+                  <div key={r._id} className="p-4 transition border border-gray-200 rounded-lg hover:shadow-md">
+                    <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="font-semibold text-lg">{r.doctorId?.name || 'Unknown Doctor'}</div>
+                        <div className="text-lg font-semibold">{r.doctorId?.name || 'Unknown Doctor'}</div>
                         <div className="text-sm text-gray-600">Patient: {r.patientId?.name || 'Unknown'}</div>
                         <div className="text-sm text-gray-600">{new Date(r.createdAt).toLocaleDateString()}</div>
-                        <div className="text-sm text-gray-700 mt-1">
+                        <div className="mt-1 text-sm text-gray-700">
                           <strong>Medications:</strong> {r.medications.map(m => `${m.name} (${m.dosage})`).join(', ')}
                         </div>
                       </div>
@@ -250,35 +250,35 @@ export default function PharmacyDashboard() {
                     </div>
 
                     {r.status !== 'Dispensed' && (
-                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
+                      <div className="flex flex-wrap gap-2 pt-3 mt-3 border-t border-gray-100">
                         <button
                           onClick={() => { setSelectedRx(r); handleCheckInventory(r); }}
                           className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm flex items-center"
                           disabled={actionLoading}
                         >
-                          <Package className="h-4 w-4 mr-1" />
-                          Check Inventory (Step 4)
+                          <Package className="w-4 h-4 mr-1" />
+                          Check Inventory
                         </button>
                         <button
                           onClick={() => { setSelectedRx(r); setShowModal('clarify'); }}
                           className="px-3 py-1.5 bg-orange-600 text-white rounded hover:bg-orange-700 text-sm flex items-center"
                         >
-                          <AlertTriangle className="h-4 w-4 mr-1" />
+                          <AlertTriangle className="w-4 h-4 mr-1" />
                           Clarify (Ext 3a)
                         </button>
                         <button
                           onClick={() => { setSelectedRx(r); setShowModal('alternative'); }}
                           className="px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex items-center"
                         >
-                          <RefreshCw className="h-4 w-4 mr-1" />
+                          <RefreshCw className="w-4 h-4 mr-1" />
                           Suggest Alt (Ext 4a)
                         </button>
                         <button
                           onClick={() => { setSelectedRx(r); setShowModal('dispense'); setPaymentAmount(50); }}
                           className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex items-center"
                         >
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Dispense (Step 5-8)
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        Dispense
                       </button>
                     </div>
                   )}
@@ -286,7 +286,7 @@ export default function PharmacyDashboard() {
               ))}
             </div>
             ) : (
-              <div className="text-center py-10 text-gray-500">
+              <div className="py-10 text-center text-gray-500">
                 No pending prescriptions at the moment.
               </div>
             )}
@@ -294,19 +294,19 @@ export default function PharmacyDashboard() {
 
           <aside className="bg-white shadow-xl rounded-2xl">
             <div className="p-6">
-              <h3 className="text-lg font-semibold mb-3">Summary</h3>
+              <h3 className="mb-3 text-lg font-semibold">Summary</h3>
               <div className="divide-y divide-gray-100">
-                <div className="py-3 flex items-center justify-between">
+                <div className="flex items-center justify-between py-3">
                   <div className="text-sm text-gray-600">Total Prescriptions</div>
-                  <div className="font-semibold text-xl">{rxs.length}</div>
+                  <div className="text-xl font-semibold">{rxs.length}</div>
                 </div>
-                <div className="py-3 flex items-center justify-between">
+                <div className="flex items-center justify-between py-3">
                   <div className="text-sm text-gray-600">Pending</div>
-                  <div className="font-semibold text-xl text-blue-600">{rxs.filter(r => r.status !== 'Dispensed').length}</div>
+                  <div className="text-xl font-semibold text-blue-600">{rxs.filter(r => r.status !== 'Dispensed').length}</div>
                 </div>
-                <div className="py-3 flex items-center justify-between">
+                <div className="flex items-center justify-between py-3">
                   <div className="text-sm text-gray-600">Dispensed</div>
-                  <div className="font-semibold text-xl text-green-600">{rxs.filter(r => r.status === 'Dispensed').length}</div>
+                  <div className="text-xl font-semibold text-green-600">{rxs.filter(r => r.status === 'Dispensed').length}</div>
                 </div>
               </div>
             </div>
@@ -314,12 +314,12 @@ export default function PharmacyDashboard() {
         </div>
       </div>        {/* Modals */}
         {showModal === 'clarify' && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-bold mb-4">Request Clarification (UC-001 Ext 3a)</h3>
-              <p className="text-sm text-gray-600 mb-4">Prescription unclear? Request clarification from doctor.</p>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg">
+              <h3 className="mb-4 text-xl font-bold">Request Clarification (UC-001 Ext 3a)</h3>
+              <p className="mb-4 text-sm text-gray-600">Prescription unclear? Request clarification from doctor.</p>
               <textarea
-                className="w-full border border-gray-300 rounded p-2 mb-4"
+                className="w-full p-2 mb-4 border border-gray-300 rounded"
                 rows={4}
                 placeholder="Describe what needs clarification..."
                 value={clarificationReason}
@@ -329,7 +329,7 @@ export default function PharmacyDashboard() {
                 <button
                   onClick={handleRequestClarification}
                   disabled={loading || !clarificationReason}
-                  className="flex-1 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 text-white bg-orange-600 rounded hover:bg-orange-700 disabled:opacity-50"
                 >
                   {loading ? 'Sending...' : 'Send Request'}
                 </button>
@@ -345,23 +345,23 @@ export default function PharmacyDashboard() {
         )}
 
         {showModal === 'alternative' && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-bold mb-4">Suggest Alternative (UC-001 Ext 4a)</h3>
-              <p className="text-sm text-gray-600 mb-4">Drug unavailable? Suggest alternatives to doctor.</p>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg">
+              <h3 className="mb-4 text-xl font-bold">Suggest Alternative (UC-001 Ext 4a)</h3>
+              <p className="mb-4 text-sm text-gray-600">Drug unavailable? Suggest alternatives to doctor.</p>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded p-2 mb-3"
+                className="w-full p-2 mb-3 border border-gray-300 rounded"
                 placeholder="Unavailable medication name"
                 value={alternativeMed}
                 onChange={(e) => setAlternativeMed(e.target.value)}
               />
-              <label className="block text-sm font-semibold mb-2">Alternatives:</label>
+              <label className="block mb-2 text-sm font-semibold">Alternatives:</label>
               {alternatives.map((alt, idx) => (
                 <input
                   key={idx}
                   type="text"
-                  className="w-full border border-gray-300 rounded p-2 mb-2"
+                  className="w-full p-2 mb-2 border border-gray-300 rounded"
                   placeholder={`Alternative ${idx + 1}`}
                   value={alt}
                   onChange={(e) => {
@@ -373,7 +373,7 @@ export default function PharmacyDashboard() {
               ))}
               <button
                 onClick={() => setAlternatives([...alternatives, ''])}
-                className="text-sm text-blue-600 hover:underline mb-4"
+                className="mb-4 text-sm text-blue-600 hover:underline"
               >
                 + Add another alternative
               </button>
@@ -381,7 +381,7 @@ export default function PharmacyDashboard() {
                 <button
                   onClick={handleSuggestAlternative}
                   disabled={loading || !alternativeMed}
-                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 text-white bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-50"
                 >
                   {loading ? 'Sending...' : 'Suggest Alternatives'}
                 </button>
@@ -397,29 +397,29 @@ export default function PharmacyDashboard() {
         )}
 
         {showModal === 'dispense' && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-bold mb-4">Dispense Prescription (UC-001 Step 5-8)</h3>
-              <p className="text-sm text-gray-600 mb-4">Confirm payment and dispense medication.</p>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg">
+              <h3 className="mb-4 text-xl font-bold">Dispense Prescription</h3>
+              <p className="mb-4 text-sm text-gray-600">Confirm payment and dispense medication.</p>
               <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2">Payment Amount ($)</label>
+                <label className="block mb-2 text-sm font-semibold">Payment Amount ($)</label>
                 <input
                   type="number"
-                  className="w-full border border-gray-300 rounded p-2"
+                  className="w-full p-2 border border-gray-300 rounded"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(parseFloat(e.target.value) || 0)}
                   min="0"
                   step="0.01"
                 />
               </div>
-              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4 text-sm text-blue-800">
+              <div className="p-3 mb-4 text-sm text-blue-800 border border-blue-200 rounded bg-blue-50">
                 <strong>Note:</strong> System will check inventory, process payment, update records, and notify patient.
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={handleDispenseWithPayment}
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-50"
                 >
                   {loading ? 'Dispensing...' : 'Confirm & Dispense'}
                 </button>
@@ -435,18 +435,18 @@ export default function PharmacyDashboard() {
         )}
 
         {showModal === 'inventory' && inventoryCheck && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-              <h3 className="text-xl font-bold mb-4">Inventory Check Results (UC-001 Step 4)</h3>
-              <div className="space-y-3 mb-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="w-full max-w-lg p-6 bg-white rounded-lg">
+              <h3 className="mb-4 text-xl font-bold">Inventory Check Results (UC-001 Step 4)</h3>
+              <div className="mb-4 space-y-3">
                 {inventoryCheck.medications?.map((med: any, idx: number) => (
                   <div key={idx} className={`border rounded p-3 ${med.available ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold">{med.medication}</span>
                       {med.available ? (
-                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <CheckCircle className="w-5 h-5 text-green-600" />
                       ) : (
-                        <AlertTriangle className="h-5 w-5 text-red-600" />
+                        <AlertTriangle className="w-5 h-5 text-red-600" />
                       )}
                     </div>
                     {med.available ? (
@@ -467,7 +467,7 @@ export default function PharmacyDashboard() {
               </div>
               <button
                 onClick={() => { setShowModal(null); setInventoryCheck(null); }}
-                className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-700"
               >
                 Close
               </button>

@@ -175,7 +175,7 @@ export default function TriageAdmission() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Navigation currentPage="staff" isAuthenticated={true} userName={user?.name || 'Staff'} />
 
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+    <div className="px-4 py-8 pt-24 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">UC-004: Triage & Admission</h1>
@@ -199,18 +199,18 @@ export default function TriageAdmission() {
 
         {/* Success Message */}
         {message && (
-          <div className="p-3 mb-4 text-green-800 border border-green-200 rounded-lg bg-green-50 flex items-center gap-2">
+          <div className="flex items-center gap-2 p-3 mb-4 text-green-800 border border-green-200 rounded-lg bg-green-50">
             <span>✓</span> {message}
           </div>
         )}
 
         {/* Error Message (Extensions 2a, 5a, 8a) */}
         {error && (
-          <div className="p-3 mb-4 text-red-800 border border-red-200 rounded-lg bg-red-50 flex items-center gap-2">
+          <div className="flex items-center gap-2 p-3 mb-4 text-red-800 border border-red-200 rounded-lg bg-red-50">
             <AlertCircle className="w-5 h-5" />
             <div>
               <strong>Error:</strong> {error}
-              <div className="text-sm mt-1">Please contact support if the issue persists.</div>
+              <div className="mt-1 text-sm">Please contact support if the issue persists.</div>
             </div>
           </div>
         )}
@@ -225,12 +225,12 @@ export default function TriageAdmission() {
           <div className="grid gap-4 lg:grid-cols-3 sm:gap-6">
           <div className="p-6 shadow-xl lg:col-span-2 liquid-glass rounded-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Triage Queue (Step 7: Priority Sorted)</h2>
+              <h2 className="text-lg font-semibold">Triage Queue (Priority Sorted)</h2>
               <span className="text-sm text-gray-600">{filtered.length} patient(s)</span>
             </div>
             
             {filtered.length === 0 ? (
-              <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg">
+              <div className="p-8 text-center text-gray-500 rounded-lg bg-gray-50">
                 No patients in triage queue
               </div>
             ) : (
@@ -277,7 +277,7 @@ export default function TriageAdmission() {
                     </div>
 
                     <div className="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-4">
-                      {/* Step 5: Assign Bed */}
+                      {/* Assign Bed */}
                       {!item.assignedBed && (
                         <button 
                           onClick={() => openAssign(item)} 
@@ -305,14 +305,14 @@ export default function TriageAdmission() {
 
           <div className="p-6 shadow-xl liquid-glass rounded-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Beds (Step 5)</h2>
+              <h2 className="text-lg font-semibold">Beds</h2>
               <span className="text-sm text-gray-600">
                 {vacantBeds.length}/{beds.length} available
               </span>
             </div>
             
             {beds.length === 0 ? (
-              <div className="p-6 text-center text-gray-500 bg-gray-50 rounded-lg">
+              <div className="p-6 text-center text-gray-500 rounded-lg bg-gray-50">
                 No beds configured
               </div>
             ) : (
@@ -366,7 +366,7 @@ export default function TriageAdmission() {
           </div>
         </div>
 
-        {/* UC-004 Step 5 & 8: Assign Bed Modal (with doctor notification) */}
+        {/* Assign Bed Modal (with doctor notification) */}
         {showAssign && selected && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="w-full max-w-2xl p-6 mx-4 bg-white shadow-2xl rounded-2xl">
@@ -374,7 +374,7 @@ export default function TriageAdmission() {
                 Assign Bed to {selected.patientId.name}
               </h3>
               <p className="mb-4 text-sm text-gray-600">
-                UC-004 Step 5: Select a vacant bed from the list below. Step 8: Doctor will be notified automatically.
+                Select a vacant bed from the list below. Doctor will be notified automatically.
               </p>
               
               {/* Severity Badge */}

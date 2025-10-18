@@ -24,7 +24,7 @@ export interface AvailableSlotFilters {
   specialization?: string;
 }
 
-// Get available slots (UC-002 Step 3) - Public route
+// Get available slots - Public route
 export const getAvailableSlots = async (filters?: AvailableSlotFilters) => {
   const queryParams = new URLSearchParams(filters as Record<string, string>).toString();
   const endpoint = queryParams ? `/schedules/available?${queryParams}` : '/schedules/available';
@@ -34,7 +34,7 @@ export const getAvailableSlots = async (filters?: AvailableSlotFilters) => {
   });
 };
 
-// Hold a slot temporarily (UC-002 Step 4)
+// Hold a slot temporarily
 export const holdSlot = async (holdData: SlotHoldData) => {
   return apiFetch('/schedules/hold', {
     method: 'POST',

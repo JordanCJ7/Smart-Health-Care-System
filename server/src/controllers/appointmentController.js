@@ -9,7 +9,7 @@ import { sendSuccess } from '../utils/response.js';
 import { generateICSFile } from '../utils/calendarUtils.js';
 import { sendAppointmentConfirmation } from '../utils/notificationService.js';
 
-// @desc    Create appointment (UC-002 Step 6)
+// @desc    Create appointment
 // @route   POST /api/appointments
 // @access  Private
 export const createAppointment = asyncHandler(async (req, res) => {
@@ -37,7 +37,7 @@ export const createAppointment = asyncHandler(async (req, res) => {
     throw new Error('Invalid patient ID');
   }
 
-  // UC-002 Step 5: Check payment if required (payment rules by hospital type)
+  //  Check payment if required (payment rules by hospital type)
   if (paymentId) {
     const payment = await Payment.findById(paymentId);
     if (!payment || payment.status !== 'Completed' || payment.userId.toString() !== patientId) {
@@ -46,12 +46,12 @@ export const createAppointment = asyncHandler(async (req, res) => {
     }
   }
 
-  // Start a session for transaction (UC-002 Step 6: Atomic update)
+  // Start a session for transaction
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    // UC-002 Step 6a: Check for concurrency conflict
+    // Check for concurrency conflict
     const existingAppointment = await Appointment.findOne({
       doctorId,
       date: new Date(date),
@@ -84,7 +84,7 @@ export const createAppointment = asyncHandler(async (req, res) => {
       { session }
     );
 
-    // UC-002 Step 6: Update doctor schedule if scheduleId provided
+    // Update doctor schedule if scheduleId provided
     if (scheduleId) {
       const schedule = await DoctorSchedule.findById(scheduleId).session(session);
       if (schedule) {
@@ -116,7 +116,7 @@ export const createAppointment = asyncHandler(async (req, res) => {
       .populate('patientId', 'name email phone')
       .populate('doctorId', 'name email specialization department');
 
-    // UC-002 Step 7: Send confirmation notification (async, non-blocking)
+    // Send confirmation notification (async, non-blocking)
     try {
       await sendAppointmentConfirmation({
         appointmentId: populatedAppointment._id,
@@ -136,7 +136,7 @@ export const createAppointment = asyncHandler(async (req, res) => {
       // Flag for manual follow-up could be added here
     }
 
-    // UC-002 Step 7: Generate ICS calendar file
+    // Generate ICS calendar file
     const icsFile = generateICSFile({
       title: `Appointment with Dr. ${populatedAppointment.doctorId.name}`,
       description: reason || 'Medical appointment',

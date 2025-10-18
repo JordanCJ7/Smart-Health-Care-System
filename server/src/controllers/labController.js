@@ -3,7 +3,7 @@ import LabOrder from '../models/LabOrder.js';
 import User from '../models/User.js';
 import { sendSuccess } from '../utils/response.js';
 
-// @desc    Create lab order (UC-003 Step 1, 3, 4)
+// @desc    Create lab order 
 // @route   POST /api/labs/order
 // @access  Private (Staff - includes Doctor role)
 export const createLabOrder = asyncHandler(async (req, res) => {
@@ -116,7 +116,7 @@ export const getLabOrderById = asyncHandler(async (req, res) => {
   sendSuccess(res, order);
 });
 
-// @desc    Update lab order results (UC-003 Step 7, 8, 8a, 9)
+// @desc    Update lab order results 
 // @route   PUT /api/labs/results/:orderId
 // @access  Private (Staff)
 export const updateLabResults = asyncHandler(async (req, res) => {
@@ -135,7 +135,7 @@ export const updateLabResults = asyncHandler(async (req, res) => {
   if (status) {
     order.status = status;
   } else {
-    // Auto-set to completed if results are provided (Step 8)
+    // Auto-set to completed if results are provided
     order.status = 'Completed';
   }
 
@@ -350,7 +350,7 @@ export const addDoctorInterpretation = asyncHandler(async (req, res) => {
   sendSuccess(res, updatedOrder);
 });
 
-// @desc    Acknowledge critical value alert (UC-003 Step 8a - Extension)
+// @desc    Acknowledge critical value alert
 // @route   PUT /api/labs/acknowledge-critical/:orderId
 // @access  Private (Staff - Doctor role)
 export const acknowledgeCriticalAlert = asyncHandler(async (req, res) => {

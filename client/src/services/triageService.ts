@@ -130,7 +130,7 @@ export const updateBed = async (bedId: string, updateData: Partial<CreateBedData
   });
 };
 
-// UC-004 Step 2: Verify Patient Identity
+// Verify Patient Identity
 export const verifyPatientIdentity = async (identificationData: {
   digitalHealthCardId?: string;
   name?: string;
@@ -142,7 +142,7 @@ export const verifyPatientIdentity = async (identificationData: {
   });
 };
 
-// UC-004 Step 3: Access/Manage Patient Medical History
+// Access/Manage Patient Medical History
 export const getPatientMedicalHistory = async (patientId: string) => {
   return apiFetch(`/triage/patient-history/${patientId}`, {
     method: 'GET',

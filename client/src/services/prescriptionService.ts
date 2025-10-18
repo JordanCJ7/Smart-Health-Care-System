@@ -80,7 +80,7 @@ export const getDoctorPrescriptions = async () => {
 
 // UC-001 Extension scenarios
 
-// Check inventory availability (UC-001 Step 4)
+// Check inventory availability
 export const checkInventoryAvailability = async (prescriptionId: string) => {
   return apiFetch(`/prescriptions/${prescriptionId}/check-inventory`, {
     method: 'POST',
@@ -106,7 +106,7 @@ export const suggestAlternative = async (
   });
 };
 
-// Dispense prescription (UC-001 Steps 5-8)
+// Dispense prescription
 export const dispensePrescription = async (
   prescriptionId: string,
   dispensedQuantities?: Record<string, number>

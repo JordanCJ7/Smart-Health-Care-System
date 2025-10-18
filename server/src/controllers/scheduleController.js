@@ -137,7 +137,7 @@ export const getDoctorSchedule = asyncHandler(async (req, res) => {
   sendSuccess(res, schedules);
 });
 
-// @desc    Hold a slot temporarily (UC-002 Step 4)
+// @desc    Hold a slot temporarily
 // @route   POST /api/schedules/hold
 // @access  Private
 export const holdSlot = asyncHandler(async (req, res) => {
