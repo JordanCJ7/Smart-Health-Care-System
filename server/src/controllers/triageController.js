@@ -193,7 +193,7 @@ export const createTriageRecord = asyncHandler(async (req, res) => {
     ...metadata,
   });
 
-  sendSuccess(res, populatedRecord, 201);
+  sendSuccess(res, populatedRecord, 'Triage record created successfully', 201);
 });
 
 // @desc    Get all triage records (with priority queue sorting)
@@ -352,7 +352,7 @@ export const createBed = asyncHandler(async (req, res) => {
     notes,
   });
 
-  sendSuccess(res, bed, 201);
+  sendSuccess(res, bed, 'Bed created successfully', 201);
 });
 
 // @desc    Assign bed to patient

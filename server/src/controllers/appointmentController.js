@@ -149,7 +149,7 @@ export const createAppointment = asyncHandler(async (req, res) => {
     sendSuccess(res, {
       appointment: populatedAppointment,
       icsFile,
-    }, 201);
+    }, 'Appointment created successfully', 201);
   } catch (error) {
     // Only abort if transaction is still active
     if (session.inTransaction()) {

@@ -36,7 +36,7 @@ export const createPrescription = asyncHandler(async (req, res) => {
     .populate('patientId', 'name email phone dateOfBirth')
     .populate('doctorId', 'name specialization department');
 
-  sendSuccess(res, populatedPrescription, 201);
+  sendSuccess(res, populatedPrescription, 'Prescription created successfully', 201);
 });
 
 // @desc    Get pending prescriptions (for pharmacists)
@@ -255,7 +255,7 @@ export const requestClarification = asyncHandler(async (req, res) => {
     reason
   );
 
-  sendSuccess(res, prescription, 200, 'Clarification request sent to doctor');
+  sendSuccess(res, prescription, 'Clarification request sent to doctor', 200);
 });
 
 // @desc    Suggest alternative medication (UC-001 Extension 4a)
@@ -296,7 +296,7 @@ export const suggestAlternative = asyncHandler(async (req, res) => {
     alternatives.map(alt => ({ drugName: alt }))
   );
 
-  sendSuccess(res, prescription, 200, 'Alternative suggestions sent to doctor');
+  sendSuccess(res, prescription, 'Alternative suggestions sent to doctor', 200);
 });
 
 // @desc    Dispense prescription with inventory check (UC-001 Steps 5-8)
@@ -389,7 +389,7 @@ export const dispensePrescription = asyncHandler(async (req, res) => {
       req.user.id
     );
 
-    sendSuccess(res, prescription, 200, 'Prescription fully dispensed');
+    sendSuccess(res, prescription, 'Prescription fully dispensed', 200);
   } else {
     // Partial dispense (UC-001 Extension 7a)
     prescription.status = 'Partially_Dispensed';

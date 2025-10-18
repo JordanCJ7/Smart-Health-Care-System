@@ -55,7 +55,7 @@ export const addToWaitlist = asyncHandler(async (req, res) => {
     .populate('patientId', 'name email phone')
     .populate('doctorId', 'name email specialization department');
 
-  sendSuccess(res, populatedEntry, 201);
+  sendSuccess(res, populatedEntry, 'Added to waitlist successfully', 201);
 });
 
 // @desc    Get user's waitlist entries

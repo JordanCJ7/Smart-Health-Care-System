@@ -38,7 +38,7 @@ export const createLabOrder = asyncHandler(async (req, res) => {
   // In production, this would trigger a real-time notification system
   console.log(`[LAB QUEUE NOTIFICATION] New ${priority} lab order: ${testType} for patient ${patient.name}`);
 
-  sendSuccess(res, populatedOrder, 201);
+  sendSuccess(res, populatedOrder, 'Lab order created successfully', 201);
 });
 
 // @desc    Get pending lab orders (for lab technicians)

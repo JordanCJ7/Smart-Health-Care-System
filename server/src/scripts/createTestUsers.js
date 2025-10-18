@@ -28,7 +28,7 @@ async function createTestUsers() {
         email: 'admin@hospital.local',
         password: 'Admin@12345',
         role: 'Admin'
-      }
+      },
       {
         name: 'Dr. John Smith',
         email: 'doctor@hospital.local',
