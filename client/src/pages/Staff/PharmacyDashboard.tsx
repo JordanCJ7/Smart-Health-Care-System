@@ -196,7 +196,7 @@ export default function PharmacyDashboard() {
               )}
             </button>
             <button 
-              onClick={() => showMessage('info', 'Stock management opened (demo)')} 
+              onClick={() => showMessage('info', 'Stock management opened')} 
               className="px-4 py-2 transition bg-white border border-gray-200 rounded-lg hover:shadow"
             >
               <Package className="inline w-4 h-4 mr-2" />
