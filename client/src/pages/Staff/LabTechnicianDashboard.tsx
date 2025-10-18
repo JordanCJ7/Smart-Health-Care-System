@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Navigation from '../../components/Navigation';
 import { FileText, Loader2, AlertCircle } from 'lucide-react';
 import { 
-  getPendingLabOrders, 
+  getAllLabOrders, 
   collectSample, 
   rejectSample,
   updateLabResults,
@@ -30,6 +30,7 @@ export default function LabTechnicianDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<LabOrder | null>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [results, setResults] = useState<Record<string, any>>({});
+  const [resultsText, setResultsText] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -38,7 +39,7 @@ export default function LabTechnicianDashboard() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await getPendingLabOrders();
+      const response = await getAllLabOrders();
       if (response.success) {
         setOrders(response.data);
       }
@@ -88,15 +89,33 @@ export default function LabTechnicianDashboard() {
   const handleOpenResultsModal = (order: LabOrder) => {
     setSelectedOrder(order);
     setResults({});
+    setResultsText('');
     setShowResultsModal(true);
   };
 
   const handleSubmitResults = async () => {
     if (!selectedOrder) return;
+    
+    // Parse results - try JSON first, if fails use text as-is
+    let finalResults = results;
+    if (resultsText.trim()) {
+      try {
+        finalResults = JSON.parse(resultsText);
+      } catch {
+        // If not valid JSON, treat as plain text with a "result" key
+        finalResults = { result: resultsText.trim() };
+      }
+    }
+    
+    if (Object.keys(finalResults).length === 0) {
+      showMessage('error', 'Please enter lab results');
+      return;
+    }
+    
     setActionLoading(selectedOrder._id);
     try {
       await updateLabResults(selectedOrder._id, {
-        results,
+        results: finalResults,
         status: 'Completed',
       });
       showMessage('success', 'Lab results submitted successfully');
@@ -272,20 +291,30 @@ export default function LabTechnicianDashboard() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Results (JSON format or key-value pairs)
+                    Lab Results
                   </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Enter results as JSON format or plain text. Examples:<br/>
+                    JSON: {`{"hemoglobin": "14.5 g/dL", "wbc": "7500/μL"}`}<br/>
+                    Text: Hemoglobin: 14.5 g/dL, WBC: 7500/μL
+                  </p>
                   <textarea
-                    value={JSON.stringify(results, null, 2)}
+                    value={resultsText}
                     onChange={(e) => {
+                      const value = e.target.value;
+                      setResultsText(value);
+                      // Try to parse as JSON for real-time validation
                       try {
-                        setResults(JSON.parse(e.target.value));
+                        const parsed = JSON.parse(value);
+                        setResults(parsed);
                       } catch {
-                        // Invalid JSON, ignore
+                        // Not valid JSON yet, that's ok
+                        setResults({});
                       }
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={6}
-                    placeholder='{"hemoglobin": "14.5 g/dL", "wbc": "7500/μL"}'
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                    rows={8}
+                    placeholder='Enter results here...'
                   />
                 </div>
               </div>
@@ -299,7 +328,7 @@ export default function LabTechnicianDashboard() {
                 </button>
                 <button
                   onClick={handleSubmitResults}
-                  disabled={actionLoading === selectedOrder._id}
+                  disabled={actionLoading === selectedOrder._id || !resultsText.trim()}
                   className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                 >
                   {actionLoading === selectedOrder._id ? <Loader2 className="animate-spin h-5 w-5" /> : 'Submit Results'}

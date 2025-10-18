@@ -22,6 +22,7 @@ import StaffLayout from './pages/Staff/StaffLayout';
 import StaffDashboard from './pages/Staff/StaffDashboard';
 import TriageAdmission from './pages/Staff/TriageAdmission';
 import DoctorDashboard from './pages/Staff/DoctorDashboard';
+import DoctorLabOrderPage from './pages/Staff/DoctorLabOrderPage';
 import LabTechnicianDashboard from './pages/Staff/LabTechnicianDashboard';
 import PharmacyDashboard from './pages/Staff/PharmacyDashboard';
 import EPrescription from './pages/Staff/EPrescription';
@@ -87,6 +88,7 @@ function App() {
             <Route path="dashboard" element={<ProtectedRoute requiredRole="Staff"><StaffDashboard /></ProtectedRoute>} />
             <Route path="triage" element={<ProtectedRoute requiredRole="Staff"><TriageAdmission /></ProtectedRoute>} />
             <Route path="doctor" element={<ProtectedRoute requiredRole="Staff"><DoctorDashboard /></ProtectedRoute>} />
+            <Route path="doctor/lab-orders" element={<ProtectedRoute requiredRole="Staff"><DoctorLabOrderPage /></ProtectedRoute>} />
             <Route path="lab" element={<ProtectedRoute requiredRole="Staff"><LabTechnicianDashboard /></ProtectedRoute>} />
             <Route path="pharmacy" element={<ProtectedRoute requiredRole="Staff"><PharmacyDashboard /></ProtectedRoute>} />
             <Route path="e-prescription" element={<ProtectedRoute requiredRole="Staff"><EPrescription /></ProtectedRoute>} />

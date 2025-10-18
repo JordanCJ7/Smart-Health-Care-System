@@ -42,7 +42,7 @@ export default function TriageAdmission() {
   const { user } = useAuth();
   const [triage, setTriage] = useState<TriageItem[]>([]);
   const [beds, setBeds] = useState<BedItem[]>([]);
-  const [filter, setFilter] = useState<'All' | 'Queued' | 'Admitted-ER' | 'Admitted-Ward'>('All');
+  const [filter, setFilter] = useState<'All' | 'Queued' | 'Admitted-ER' | 'Admitted-Ward' | 'Discharged'>('All');
   const [selected, setSelected] = useState<TriageItem | null>(null);
   const [showAssign, setShowAssign] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -91,9 +91,45 @@ export default function TriageAdmission() {
 
   // UC-004 Step 7: Priority queue filtering (already sorted by backend)
   const filtered = useMemo(() => {
-    if (filter === 'All') return triage;
-    return triage.filter(t => t.admissionStatus === filter);
+    let result = triage;
+    
+    // Apply filter if not 'All'
+    if (filter !== 'All') {
+      result = triage.filter(t => t.admissionStatus === filter);
+    }
+    
+    // Sort: Queued first, then by severity and creation time
+    return result.sort((a, b) => {
+      // Priority 1: Queued status comes first
+      if (a.admissionStatus === 'Queued' && b.admissionStatus !== 'Queued') return -1;
+      if (a.admissionStatus !== 'Queued' && b.admissionStatus === 'Queued') return 1;
+      
+      // Priority 2: Discharged goes last
+      if (a.admissionStatus === 'Discharged' && b.admissionStatus !== 'Discharged') return 1;
+      if (a.admissionStatus !== 'Discharged' && b.admissionStatus === 'Discharged') return -1;
+      
+      // Priority 3: Sort by severity
+      const severityOrder = { 'Critical': 0, 'Urgent': 1, 'Stable': 2, 'Normal': 3 };
+      const severityDiff = severityOrder[a.severityLevel] - severityOrder[b.severityLevel];
+      if (severityDiff !== 0) return severityDiff;
+      
+      // Priority 4: Sort by creation time (older first)
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    });
   }, [triage, filter]);
+  
+  // Separate discharged patients
+  const dischargedPatients = useMemo(() => {
+    return triage.filter(t => t.admissionStatus === 'Discharged').sort((a, b) => {
+      // Sort discharged patients by most recent first
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  }, [triage]);
+  
+  // Active patients (not discharged)
+  const activePatients = useMemo(() => {
+    return filtered.filter(t => t.admissionStatus !== 'Discharged');
+  }, [filtered]);
 
   function openAssign(item: TriageItem) {
     setSelected(item);
@@ -223,6 +259,7 @@ export default function TriageAdmission() {
               <option>Queued</option>
               <option>Admitted-ER</option>
               <option>Admitted-Ward</option>
+              <option>Discharged</option>
             </select>
           </div>
         </div>
@@ -256,16 +293,16 @@ export default function TriageAdmission() {
           <div className="p-6 shadow-xl lg:col-span-2 liquid-glass rounded-2xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Triage Queue (Priority Sorted)</h2>
-              <span className="text-sm text-gray-600">{filtered.length} patient(s)</span>
+              <span className="text-sm text-gray-600">{activePatients.length} active patient(s)</span>
             </div>
             
-            {filtered.length === 0 ? (
+            {activePatients.length === 0 ? (
               <div className="p-8 text-center text-gray-500 rounded-lg bg-gray-50">
-                No patients in triage queue
+                No active patients in triage queue
               </div>
             ) : (
               <div className="space-y-4">
-                {filtered.map((item, index) => (
+                {activePatients.map((item, index) => (
                   <div key={item._id} className={`flex flex-col p-4 border-2 rounded-lg sm:flex-row sm:items-start sm:justify-between ${getSeverityColor(item.severityLevel)}`}>
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
@@ -333,6 +370,48 @@ export default function TriageAdmission() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+            
+            {/* Discharged Patients Section */}
+            {filter === 'All' && dischargedPatients.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-700">Discharged Patients</h2>
+                  <span className="text-sm text-gray-600">{dischargedPatients.length} patient(s)</span>
+                </div>
+                <div className="space-y-3">
+                  {dischargedPatients.map((item) => (
+                    <div key={item._id} className="flex flex-col p-4 transition-colors bg-gray-50 border border-gray-200 rounded-lg opacity-75 hover:opacity-100">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <User className="w-5 h-5 text-gray-400" />
+                            <div>
+                              <h3 className="font-semibold text-gray-800">
+                                {item.patientId.name}
+                                {item.patientId.age && <span className="ml-2 text-sm text-gray-500">({item.patientId.age} yrs)</span>}
+                              </h3>
+                              <div className="text-sm text-gray-600">{item.symptoms}</div>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                            <div className="flex items-center gap-1 px-2 py-1 bg-white rounded-full">
+                              <Clock className="w-3 h-3" /> 
+                              {new Date(item.createdAt).toLocaleString()}
+                            </div>
+                            <div className="px-2 py-1 text-gray-700 bg-gray-200 rounded-full">
+                              Discharged
+                            </div>
+                            <div className="px-2 py-1 bg-white rounded-full">
+                              {item.severityLevel}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

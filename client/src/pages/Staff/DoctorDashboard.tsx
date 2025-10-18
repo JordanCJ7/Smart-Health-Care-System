@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '../../components/Navigation';
-import { Calendar, User, Loader2, AlertCircle } from 'lucide-react';
+import { Calendar, User, Loader2, AlertCircle, TestTube } from 'lucide-react';
 import { getMyAppointments } from '../../services/appointmentService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -18,6 +19,7 @@ type Appointment = {
 
 export default function DoctorDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
@@ -79,13 +81,22 @@ export default function DoctorDashboard() {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Doctor Dashboard</h1>
             <p className="text-gray-600">Overview of your appointments and patients</p>
           </div>
-          <button 
-            onClick={fetchAppointments}
-            disabled={loading}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:shadow-lg transition-shadow"
-          >
-            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Refresh'}
-          </button>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => navigate('/staff/doctor/lab-orders')}
+              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-shadow flex items-center gap-2"
+            >
+              <TestTube className="h-5 w-5" />
+              Lab Orders
+            </button>
+            <button 
+              onClick={fetchAppointments}
+              disabled={loading}
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:shadow-lg transition-shadow"
+            >
+              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Refresh'}
+            </button>
+          </div>
         </div>
 
         {message && (
