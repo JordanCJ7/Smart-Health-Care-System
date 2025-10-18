@@ -70,9 +70,18 @@ export interface MedicalHistoryData {
  * @returns Promise with medical history data
  */
 export const getPatientMedicalHistory = async (patientId: string) => {
-  return apiFetch(`/triage/patient-history/${patientId}`, {
-    method: 'GET',
-  });
+  const endpoint = `/triage/patient-history/${patientId}`;
+  console.log('Calling getPatientMedicalHistory endpoint:', endpoint);
+  try {
+    const response = await apiFetch(endpoint, {
+      method: 'GET',
+    });
+    console.log('getPatientMedicalHistory response:', response);
+    return response;
+  } catch (error) {
+    console.error('getPatientMedicalHistory error:', error);
+    throw error;
+  }
 };
 
 /**
@@ -82,9 +91,18 @@ export const getPatientMedicalHistory = async (patientId: string) => {
  */
 export const searchPatients = async (query: string) => {
   const params = new URLSearchParams({ search: query });
-  return apiFetch(`/prescriptions/search/patients?${params.toString()}`, {
-    method: 'GET',
-  });
+  const endpoint = `/prescriptions/search/patients?${params.toString()}`;
+  console.log('Calling searchPatients endpoint:', endpoint);
+  try {
+    const response = await apiFetch(endpoint, {
+      method: 'GET',
+    });
+    console.log('searchPatients response:', response);
+    return response;
+  } catch (error) {
+    console.error('searchPatients error:', error);
+    throw error;
+  }
 };
 
 /**
